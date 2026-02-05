@@ -5,20 +5,27 @@ import Todo from './Todo';
 export default function TodoList() {
   const [todos, setTodos] = React.useState([])
 
+  React.useEffect(() => {
+    localStorage.getItem('todos') && setTodos(JSON.parse(localStorage.getItem('todos')));
+  }, [])
+
   const handleAddTodo = (newTodo) => {
     setTodos(prevTodos => [...prevTodos, newTodo]);
+    localStorage.setItem('todos', JSON.stringify([...todos, newTodo]));
   }
   
   const handleUpdateTodo = (updatedTodo) => {
-    setTodos(prevTodos =>
-      prevTodos.map(todo => todo.id === updatedTodo.id ? updatedTodo : todo)
+    const updatedTodos = todos.map((todo) =>
+      todo.id === updatedTodo.id ? updatedTodo : todo,
     );
+    setTodos(updatedTodos);
+    localStorage.setItem('todos', JSON.stringify(updatedTodos));
   }
 
   const handleDeleteTodo = (id) => {
-    setTodos(prevTodos =>
-      prevTodos.filter(todo => todo.id !== id)
-    );
+    const updatedTodos = todos.filter(todo => todo.id !== id);
+    setTodos(updatedTodos);
+    localStorage.setItem('todos', JSON.stringify(updatedTodos));
   }
 
   return (
