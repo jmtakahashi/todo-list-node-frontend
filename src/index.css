@@ -1,13 +1,109 @@
-body {
+* {
+  box-sizing: border-box;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  padding: 0;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  monospace;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #3f3f3f;
+  color: #fff;
+  font-size: 1rem;
+}
+
+a {
+  color: inherit;
+}
+
+.todo-list__container {
+  max-width: 600px;
+  margin: 2rem auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background-color: #3c3c3c;
+  border-radius: 12px;
+  padding: 2rem;
+}
+
+.todo-list__todos {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.todo-list__todos li {
+  background-color: #2a2a2a;
+  padding: 1.5rem;
+  list-style: none;
+  border-radius: 7px;
+}
+
+.todo-list__composer {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.todo-list__composer input, .todo-list__composer button {
+  color: #fff;
+  border: 1px solid #fff;
+  background-color: transparent;
+  padding: .75rem;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.todo-list__composer input {
+  flex-grow: 1;
+}
+
+.todo-list__composer input:focus {
+  border: 1px solid #00ff00;
+  outline: none;
+}
+
+.todo-list__composer button {
+  cursor: pointer;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+}
+
+.todo-list__todo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.todo-list__todo label {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.todo-list__todo-checkbox {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.todo-list__todo-edit-input {
+  background-color: transparent;
+  border: none;
+  border-bottom: 1px solid #fff;
+  font-size: 1rem;
+  color: #fff;
+}
+
+.todo-list__todo button {
+  color: #fff;
+  background: none;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  text-decoration: underline;
+  margin-left: 1rem;
 }
