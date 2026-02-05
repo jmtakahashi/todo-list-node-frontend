@@ -10,8 +10,9 @@ export default function TodoList() {
   }, [])
 
   const handleAddTodo = (newTodo) => {
-    setTodos(prevTodos => [...prevTodos, newTodo]);
-    localStorage.setItem('todos', JSON.stringify([...todos, newTodo]));
+    const updatedTodos = [...todos, newTodo]
+    setTodos(updatedTodos);
+    localStorage.setItem('todos', JSON.stringify(updatedTodos));
   }
   
   const handleUpdateTodo = (updatedTodo) => {
