@@ -5,8 +5,9 @@ export default function Todo({ todo, handleUpdateTodo, handleDeleteTodo }) {
   const [task, setTask] = React.useState(todo.task);
   const [editing, setEditing] = React.useState(false);
 
-  const handleEditTodoClick = () => {
+  const handleEditTodoClick = (e) => {
     setEditing(!editing);
+    // focus the input field when entering edit mode
   };
 
   const handleEditTodo = (e) => {
@@ -21,6 +22,11 @@ export default function Todo({ todo, handleUpdateTodo, handleDeleteTodo }) {
     handleUpdateTodo({ ...todo, task });
     setEditing(false);
   };
+
+  const handleCancelEditedTodoClick = () => {
+    setTask(todo.task);
+    setEditing(false);
+  }
 
   const handleDeleteTodoClick = () => {
     handleDeleteTodo(todo._id);
@@ -45,17 +51,20 @@ export default function Todo({ todo, handleUpdateTodo, handleDeleteTodo }) {
             onChange={handleEditTodo}
           />
         ) : (
-          <span>{todo.task}</span>
+          <span className='todo-list__todo-task'>{todo.task}</span>
         )}
       </label>
       <div>
         {editing === true ? (
-          <button onClick={handleSaveEditedTodoClick}>Save</button>
+          <React.Fragment>
+            <button onClick={handleSaveEditedTodoClick}>Save</button>
+            <button onClick={handleCancelEditedTodoClick}>Cancel</button>
+          </React.Fragment>
         ) : (
-          <>
+          <React.Fragment>
             <button onClick={handleEditTodoClick}>Edit</button>
             <button onClick={handleDeleteTodoClick}>Delete</button>
-          </>
+          </React.Fragment>
         )}
       </div>
     </li>

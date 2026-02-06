@@ -63,20 +63,18 @@ export default function TodoList() {
     }
   }
 
-  return (
-    <div className='todo-list__container'>
-      <ul className='todo-list__todos'>
-        <TodoComposer handleAddTodo={handleAddTodo} />
-        {todos &&
-          todos.map((todo) => (
-            <Todo
-              key={todo._id}
-              todo={todo}
-              handleUpdateTodo={handleUpdateTodo}
-              handleDeleteTodo={handleDeleteTodo}
-            />
-          ))}
-      </ul>
-    </div>
+  return (  
+    <ul className='todo-list__todos'>
+      <TodoComposer handleAddTodo={handleAddTodo} />
+      {todos &&
+        todos.map((todo) => (
+          <Todo
+            key={todo._id}
+            todo={todo}
+            handleUpdateTodo={handleUpdateTodo}
+            handleDeleteTodo={handleDeleteTodo}
+          />
+        ))}
+    </ul>
   );
 }
