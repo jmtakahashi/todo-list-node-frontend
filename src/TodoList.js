@@ -3,9 +3,15 @@ import axios from 'axios';
 import TodoComposer from './TodoComposer';
 import Todo from './Todo';
 
+const api = axios.create({
+  baseURL: process.env.REACT_APP_API_BASE_URL,
+});
+
+console.log('API Base URL:', process.env.REACT_APP_API_BASE_URL);
+
 const fetchTodos = async () => {
   try {
-    const response = await axios.get('http://localhost:3001/todos');
+    const response = await api.get('/todos');
     return response.data;
   } catch (error) {
     console.error('Error fetching todos:', error);
@@ -26,7 +32,7 @@ export default function TodoList() {
 
   const handleAddTodo = async (newTodo) => {
     try {
-      const response = await axios.post('http://localhost:3001/todos/addTodo', newTodo);
+      const response = await api.post('/todos/addTodo', newTodo);
       if (response.status === 200) {
         newTodo._id = response.data; // assign the returned id to the new todo
         const updatedTodos = [...todos, newTodo];
@@ -39,7 +45,7 @@ export default function TodoList() {
   
   const handleUpdateTodo = async (updatedTodo) => {
     try {
-      const response = await axios.patch(`http://localhost:3001/todos/${updatedTodo._id}`, updatedTodo);
+      const response = await api.patch(`/todos/${updatedTodo._id}`, updatedTodo);
       if (response.status === 200) {
         const updatedTodos = todos.map((todo) =>
           todo._id === updatedTodo._id ? updatedTodo : todo,
@@ -53,7 +59,7 @@ export default function TodoList() {
 
   const handleDeleteTodo = async (id) => {
     try {
-      const response = await axios.delete(`http://localhost:3001/todos/${id}`);
+      const response = await api.delete(`/todos/${id}`);
       if (response.status === 200) {
         const updatedTodos = todos.filter((todo) => todo._id !== id);
         setTodos(updatedTodos);
