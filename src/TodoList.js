@@ -7,8 +7,6 @@ const api = axios.create({
   baseURL: process.env.REACT_APP_API_BASE_URL,
 });
 
-console.log('API Base URL:', process.env.REACT_APP_API_BASE_URL);
-
 const fetchTodos = async () => {
   try {
     const response = await api.get('/todos');
