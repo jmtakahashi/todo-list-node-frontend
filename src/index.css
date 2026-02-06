@@ -42,6 +42,7 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 2rem;
 }
 
 .todo-list__composer {
@@ -73,44 +74,96 @@ header {
   cursor: pointer;
 }
 
-.todo-list__todo label {
+.todo-list__todo > label {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 1.5rem;
+}
+
+.todo-list__todo-checkbox-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.todo-list__todo input[type="checkbox"] {
+  visibility: hidden
 }
 
 .todo-list__todo-checkbox {
-  width: 20px;
-  height: 20px;
+  position: absolute;
+  left: 0;
+  top: -2;
+  width: 24px;
+  height: 24px;
+  border: 1px solid #FFF;
+  border-radius: 50%;
   cursor: pointer;
 }
 
-.todo-list__todo-checkbox:checked + .todo-list__todo-task {
+.todo-list__todo-checkbox::after {
+  border: 2px solid #fff;
+  border-top: none;
+  border-right: none;
+  content: "";
+  height: 6px;
+  left: 5px;
+  opacity: 0;
+  position: absolute;
+  top: 6px;
+  transform: rotate(-45deg);
+  width: 12px;
+}
+
+.todo-list__todo input[type="checkbox"]:checked + .todo-list__todo-checkbox::after {
+  opacity: 1;
+}
+
+.todo-list__todo input[type="checkbox"]:checked + .todo-list__todo-checkbox {
+  background-color: #0ba95b;
+  border-color: #0ba95b;
+}
+
+.todo-list__todo > label:has(input[type="checkbox"]:checked) > .todo-list__todo-task {
   text-decoration: line-through;
   color: #999;
 }
 
-.todo-list__todo-task {
-  padding: .25em;
+.todo-list__todo > label:has(input[type="text"]) {
+  flex-grow: 1;
 }
 
-.todo-list__todo-edit-input {
-  background-color: #2a2a2a;
-  border: none;
+.todo-list__todo-task, .todo-list__todo-edit-task-input {
+  width: 100%;
+  padding: .25em;
+  background-color: transparent;
+  border: 1px solid;
   border-radius: .25em;
   font-size: 1rem;
   color: #fff;
-  padding: .25em;
 }
 
+.todo-list__todo-task {
+  border-color: transparent;
+}
+
+.todo-list__todo-edit-task-input {
+  border-color: #fff;
+}
+
+.todo-list__todo-buttons-container {
+  display: flex;
+  gap: 1.25rem;
+}
+
+/* edit, delete, save, cancel buttons */
 .todo-list__todo button {
-  color: #fff;
   background: none;
   border: none;
   font-size: 1rem;
-  cursor: pointer;
+  color: #fff;
   text-decoration: underline;
-  margin-left: 1rem;
+  cursor: pointer;
 }
 
 footer {
