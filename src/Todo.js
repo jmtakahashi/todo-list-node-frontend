@@ -1,30 +1,37 @@
 import React from 'react'
 
 export default function Todo({ todo, handleUpdateTodo, handleDeleteTodo }) {
+  // local state to manage the task text while editing
+  const [task, setTask] = React.useState(todo.task);
   const [editing, setEditing] = React.useState(false);
-
-  const handleCheckboxClick = () => {
-    handleUpdateTodo({ ...todo, completed: !todo.completed });
-  }
 
   const handleEditTodoClick = () => {
     setEditing(!editing);
   };
 
   const handleEditTodo = (e) => {
-    handleUpdateTodo({ ...todo, task: e.target.value });
-  }
-  
-  const handleDeleteTodoClick = () => {
-    handleDeleteTodo(todo.id);
+    setTask(e.target.value);
   };
-  
+
+  const handleCheckboxClick = () => {
+    handleUpdateTodo({ ...todo, completed: !todo.completed });
+  };
+
+  const handleSaveEditedTodoClick = () => {
+    handleUpdateTodo({ ...todo, task });
+    setEditing(false);
+  };
+
+  const handleDeleteTodoClick = () => {
+    handleDeleteTodo(todo._id);
+  };
+
   return (
     <li className='todo-list__todo'>
-      <label htmlFor={todo.id}>
+      <label htmlFor={todo._id}>
         <input
           type='checkbox'
-          id={todo.id}
+          id={todo._id}
           className='todo-list__todo-checkbox'
           checked={todo.completed}
           readOnly
@@ -34,7 +41,7 @@ export default function Todo({ todo, handleUpdateTodo, handleDeleteTodo }) {
           <input
             type='text'
             className='todo-list__todo-edit-input'
-            value={todo.task}
+            value={task}
             onChange={handleEditTodo}
           />
         ) : (
@@ -42,10 +49,14 @@ export default function Todo({ todo, handleUpdateTodo, handleDeleteTodo }) {
         )}
       </label>
       <div>
-        <button onClick={handleEditTodoClick}>
-          {editing === true ? 'Save' : 'Edit'}
-        </button>
-        {!editing && <button onClick={handleDeleteTodoClick}>Delete</button>}
+        {editing === true ? (
+          <button onClick={handleSaveEditedTodoClick}>Save</button>
+        ) : (
+          <>
+            <button onClick={handleEditTodoClick}>Edit</button>
+            <button onClick={handleDeleteTodoClick}>Delete</button>
+          </>
+        )}
       </div>
     </li>
   );

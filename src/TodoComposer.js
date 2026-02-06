@@ -12,7 +12,6 @@ export default function TodoComposer({ handleAddTodo }) {
     e.preventDefault();
     handleAddTodo(
       {
-        id: Math.floor(Math.random() * 1000000),
         task: label,
         completed: false,
         dateAdded: new Date().toISOString(),
