@@ -1,4 +1,6 @@
 import React from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus} from '@fortawesome/free-solid-svg-icons';
 
 export default function TodoComposer({ handleAddTodo }) {
   const [label, setLabel] = React.useState('');
@@ -23,7 +25,11 @@ export default function TodoComposer({ handleAddTodo }) {
 
   return (
     <li>
-      <form id="todoListComposer" onSubmit={handleSubmit} className='todo-list__composer'>
+      <form
+        id='todoListComposer'
+        onSubmit={handleSubmit}
+        className='todo-list__composer'
+      >
         <input
           ref={inputRef}
           name='new-todo'
@@ -31,10 +37,11 @@ export default function TodoComposer({ handleAddTodo }) {
           placeholder='New todo task'
           onChange={handleUpdateLabel}
           value={label}
+          required
         />
-        <button type="submit" disabled={label.length === 0}>
-          Add Todo
-          </button>
+        <button type='submit' disabled={label.length === 0}>
+          <FontAwesomeIcon icon={faPlus} />
+        </button>
       </form>
     </li>
   );
