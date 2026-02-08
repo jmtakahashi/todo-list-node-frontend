@@ -24,6 +24,7 @@ export default function Todo({ todo, handleUpdateTodo, handleDeleteTodo }) {
   };
 
   const handleCancelEditedTodoClick = () => {
+    // reset the task text to the original value (derived from props) when canceling edit
     setTask(todo.task);
     setEditing(false);
   }

@@ -19,11 +19,13 @@ const fetchTodos = async () => {
 
 export default function TodoList() {
   const [todos, setTodos] = React.useState([])
+  const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
     const handleFetchTodos = async () => {
       const fetchedTodos = await fetchTodos();
       setTodos(fetchedTodos);
+      setLoading(false);
     }
     handleFetchTodos()
   }, [])
@@ -70,15 +72,22 @@ export default function TodoList() {
   return (  
     <ul className='todo-list__todos'>
       <TodoComposer handleAddTodo={handleAddTodo} />
-      {todos &&
-        todos.map((todo) => (
-          <Todo
-            key={todo._id}
-            todo={todo}
-            handleUpdateTodo={handleUpdateTodo}
-            handleDeleteTodo={handleDeleteTodo}
-          />
-        ))}
+      {loading ? (
+        <p>Loading...</p>
+      ) : ( 
+        <>
+          {todos &&
+            todos.map((todo) => (
+              <Todo
+                key={todo._id}
+                todo={todo}
+                handleUpdateTodo={handleUpdateTodo}
+                handleDeleteTodo={handleDeleteTodo}
+              />
+            ))
+          }
+        </>
+      )}
     </ul>
   );
 }
