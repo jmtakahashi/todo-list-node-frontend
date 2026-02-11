@@ -9,28 +9,40 @@ const api = axios.create({
 
 const fetchTodos = async () => {
   try {
-    const response = await api.get('/todos');
-    return response.data;
+    const res = await api.get('/todos');
+    return res.data;
   } catch (error) {
     console.error('Error fetching todos:', error);
-    return [];
+    return error;
   }
 };
 
 export default function TodoList() {
-  const [todos, setTodos] = React.useState([])
+  const [todos, setTodos] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState(false); // for error handling (not implemented yet)
+  const [errorMessage, setErrorMessage] = React.useState(""); // for success handling (not implemented yet)
 
   React.useEffect(() => {
     const handleFetchTodos = async () => {
-      const fetchedTodos = await fetchTodos();
+      const res = await fetchTodos();
+
+      if (res instanceof Error) {
+        setError(true);
+        setErrorMessage('Error getting todos. Please try again later.');
+        setLoading(false);
+        return;
+      }
+      
+      const fetchedTodos = res; // the response from the server will be an array of todos  
       setTodos(fetchedTodos);
       setLoading(false);
-    }
-    handleFetchTodos()
-  }, [])
+    };
+    handleFetchTodos();
+  }, []);
 
   const handleAddTodo = async (newTodo) => {
+    setLoading(true);
     try {
       const response = await api.post('/todos/addTodo', newTodo);
       if (response.status === 200) {
@@ -40,10 +52,15 @@ export default function TodoList() {
       }
     } catch (error) {
       console.error('Error adding new todo:', error);
+      setError(true);
+      setErrorMessage('Error adding new todo. Please try again later.');
+    } finally {
+      setLoading(false);
     }
-  }
+  };
   
   const handleUpdateTodo = async (updatedTodo) => {
+    setLoading(true);
     try {
       const response = await api.patch(`/todos/${updatedTodo._id}`, updatedTodo);
       if (response.status === 200) {
@@ -54,10 +71,15 @@ export default function TodoList() {
       }
     } catch (error) {
       console.error('Error updating todo:', error);
+      setError(true);
+      setErrorMessage('Error updating todo. Please try again later.');
+    } finally {
+      setLoading(false);
     }
-  }
+  };
 
   const handleDeleteTodo = async (id) => {
+    setLoading(true);
     try {
       const response = await api.delete(`/todos/${id}`);
       if (response.status === 200) {
@@ -66,15 +88,19 @@ export default function TodoList() {
       }
     } catch (error) {
       console.error('Error deleting todo:', error);
+      setError(true);
+    } finally {
+      setLoading(false);
     }
-  }
+  };
 
-  return (  
+  return (
     <ul className='todo-list__todos'>
       <TodoComposer handleAddTodo={handleAddTodo} />
-      {loading ? (
-        <p>Loading...</p>
-      ) : ( 
+      {loading && <p>Loading...</p>}
+      {error && <p>{errorMessage}</p>}
+
+      {!loading && !error ? (
         <>
           {todos &&
             todos.map((todo) => (
@@ -84,10 +110,9 @@ export default function TodoList() {
                 handleUpdateTodo={handleUpdateTodo}
                 handleDeleteTodo={handleDeleteTodo}
               />
-            ))
-          }
+            ))}
         </>
-      )}
+      ) : null}
     </ul>
   );
 }
