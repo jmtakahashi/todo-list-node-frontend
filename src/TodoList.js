@@ -33,6 +33,8 @@ export default function TodoList() {
   }, []);
 
   const handleAddTodo = async (newTodo) => {
+    setError(false);
+    setErrorMessage("");
     setLoading(true);
     try {
       const response = await api.post('/todos/addTodo', newTodo);
@@ -52,6 +54,8 @@ export default function TodoList() {
   };
   
   const handleUpdateTodo = async (updatedTodo) => {
+    setError(false);
+    setErrorMessage('');
     setLoading(true);
     try {
       const response = await api.patch(
@@ -75,6 +79,8 @@ export default function TodoList() {
   };
 
   const handleDeleteTodo = async (id) => {
+    setError(false);
+    setErrorMessage('');
     setLoading(true);
     try {
       const response = await api.delete(`/todos/${id}`);
