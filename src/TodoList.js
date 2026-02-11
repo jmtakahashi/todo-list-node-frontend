@@ -7,16 +7,6 @@ const api = axios.create({
   baseURL: process.env.REACT_APP_API_BASE_URL,
 });
 
-const fetchTodos = async () => {
-  try {
-    const res = await api.get('/todos');
-    return res.data;
-  } catch (error) {
-    console.error('Error fetching todos:', error);
-    return error;
-  }
-};
-
 export default function TodoList() {
   const [todos, setTodos] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
@@ -25,19 +15,20 @@ export default function TodoList() {
 
   React.useEffect(() => {
     const handleFetchTodos = async () => {
-      const res = await fetchTodos();
-
-      if (res instanceof Error) {
+      setLoading(true);
+      try {
+        const response = await api.get('/todos');
+        const fetchedTodos = response; // the response from the server will be an array of todos
+        setTodos(fetchedTodos);
+      } catch (error) {
+        console.error('Error fetching todos:', error);
         setError(true);
         setErrorMessage('Error getting todos. Please try again later.');
+      } finally {
         setLoading(false);
-        return;
       }
-      
-      const fetchedTodos = res; // the response from the server will be an array of todos  
-      setTodos(fetchedTodos);
-      setLoading(false);
     };
+
     handleFetchTodos();
   }, []);
 
@@ -50,6 +41,7 @@ export default function TodoList() {
         const updatedTodos = [...todos, newTodoWithId];
         setTodos(updatedTodos);
       }
+      // if the response status is not 200, we can set an error state (not implemented yet)
     } catch (error) {
       console.error('Error adding new todo:', error);
       setError(true);
@@ -62,13 +54,17 @@ export default function TodoList() {
   const handleUpdateTodo = async (updatedTodo) => {
     setLoading(true);
     try {
-      const response = await api.patch(`/todos/${updatedTodo._id}`, updatedTodo);
+      const response = await api.patch(
+        `/todos/${updatedTodo._id}`,
+        updatedTodo,
+      );
       if (response.status === 200) {
         const updatedTodos = todos.map((todo) =>
           todo._id === updatedTodo._id ? updatedTodo : todo,
         );
         setTodos(updatedTodos);
       }
+      // if the response status is not 200, we can set an error state (not implemented yet)
     } catch (error) {
       console.error('Error updating todo:', error);
       setError(true);
@@ -86,6 +82,7 @@ export default function TodoList() {
         const updatedTodos = todos.filter((todo) => todo._id !== id);
         setTodos(updatedTodos);
       }
+      // if the response status is not 200, we can set an error state (not implemented yet)
     } catch (error) {
       console.error('Error deleting todo:', error);
       setError(true);
