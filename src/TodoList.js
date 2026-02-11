@@ -18,7 +18,7 @@ export default function TodoList() {
       setLoading(true);
       try {
         const response = await api.get('/todos');
-        const fetchedTodos = response; // the response from the server will be an array of todos
+        const fetchedTodos = response.data; // the response from the server will be an array of todos
         setTodos(fetchedTodos);
       } catch (error) {
         console.error('Error fetching todos:', error);
