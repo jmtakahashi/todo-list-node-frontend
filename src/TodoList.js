@@ -34,12 +34,12 @@ export default function TodoList() {
     try {
       const response = await api.post('/todos/addTodo', newTodo);
       if (response.status === 200) {
-        newTodo._id = response.data; // assign the returned id to the new todo
-        const updatedTodos = [...todos, newTodo];
+        const newTodoWithId = response.data; // the new todo returned from the server will include its id 
+        const updatedTodos = [...todos, newTodoWithId];
         setTodos(updatedTodos);
       }
     } catch (error) {
-      console.error('Error fetching todos:', error);
+      console.error('Error adding new todo:', error);
     }
   }
   
