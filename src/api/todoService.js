@@ -7,23 +7,23 @@ const api = axios.create({
 // Fetch all todos
 export const fetchTodos = async () => {
   const response = await api.get('/todos');
-  return response.data;
+  return response;
 };
 
 // Add a new todo
 export const addTodo = async (todo) => {
   const response = await api.post('/todos/addTodo', todo);
-  return response.data;
+  return response;
 };
 
 // Update an existing todo
-export const updateTodo = async (id, updatedTodo) => {
-  const response = await api.patch(`/todos/${id}`, updatedTodo);
-  return response.data;
+export const updateTodo = async (updatedTodo) => {
+  const response = await api.patch(`/todos/${updatedTodo._id}`, updatedTodo);
+  return response;
 };
 
 // Delete a todo
 export const deleteTodo = async (id) => {
   const response = await api.delete(`/todos/${id}`);
-  return response.data;
+  return response;
 };

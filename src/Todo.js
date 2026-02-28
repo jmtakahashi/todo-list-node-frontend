@@ -5,6 +5,10 @@ export default function Todo({ todo, handleUpdateTodo, handleDeleteTodo, loading
   const [task, setTask] = React.useState(todo.task);
   const [editing, setEditing] = React.useState(false);
 
+  const handleCheckboxClick = () => {
+    handleUpdateTodo({ ...todo, completed: !todo.completed });
+  };
+
   const handleEditTodoClick = (e) => {
     setEditing(!editing);
     // focus the input field when entering edit mode
@@ -12,10 +16,6 @@ export default function Todo({ todo, handleUpdateTodo, handleDeleteTodo, loading
 
   const handleEditTodo = (e) => {
     setTask(e.target.value);
-  };
-
-  const handleCheckboxClick = () => {
-    handleUpdateTodo({ ...todo, completed: !todo.completed });
   };
 
   const handleSaveEditedTodoClick = () => {
