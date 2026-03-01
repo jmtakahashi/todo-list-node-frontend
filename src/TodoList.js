@@ -26,11 +26,12 @@ export default function TodoList() {
         !error &&
         todos.map((todo) => (
           <Todo
-            key={todo._id}
+            key={todo._id ?? todo.id}
             todo={todo}
             handleUpdateTodo={handleUpdateTodo}
             handleDeleteTodo={handleDeleteTodo}
             loading={todo.loading}
+            editLoading={todo.editLoading}
           />
         ))}
     </ul>

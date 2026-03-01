@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function Todo({ todo, handleUpdateTodo, handleDeleteTodo, loading=false }) {
+export default function Todo({ todo, handleUpdateTodo, handleDeleteTodo, loading=false, editLoading=false }) {
   // local state to manage the task text while editing
   const [task, setTask] = React.useState(todo.task);
   const [editing, setEditing] = React.useState(false);
@@ -35,50 +35,56 @@ export default function Todo({ todo, handleUpdateTodo, handleDeleteTodo, loading
 
   return (
     <li className='todo-list__todo'>
-      <label htmlFor={todo._id}>
-        <div className='todo-list__todo-checkbox-container'>
-          <input
-            type='checkbox'
-            id={todo._id}
-            checked={todo.completed}
-            readOnly
-            onChange={handleCheckboxClick}
-          />
-          <span className='todo-list__todo-checkbox'></span>
-        </div>
-
-        {loading ? (
-          <span className='todo-list__todo-task'>Loading...</span>
-        ) : (
-          <>
-            {editing === true ? (
+      {loading === true ? (
+        <span>Loading...</span>
+      ) : (
+        <>
+          <label htmlFor={todo._id}>
+            <div className='todo-list__todo-checkbox-container'>
               <input
-                type='text'
-                name='task'
-                className='todo-list__todo-edit-task-input'
-                value={task}
-                onChange={handleEditTodo}
+                type='checkbox'
+                id={todo._id}
+                checked={todo.completed}
+                readOnly
+                onChange={handleCheckboxClick}
               />
-            ) : (
-              <span className='todo-list__todo-task'>{todo.task}</span>
-            )}
-          </>
-        )}
-      </label>
+              <span className='todo-list__todo-checkbox'></span>
+            </div>
 
-      <div className='todo-list__todo-buttons-container'>
-        {editing === true ? (
-          <React.Fragment>
-            <button onClick={handleSaveEditedTodoClick}>Save</button>
-            <button onClick={handleCancelEditedTodoClick}>Cancel</button>
-          </React.Fragment>
-        ) : (
-          <React.Fragment>
-            <button onClick={handleEditTodoClick}>Edit</button>
-            <button onClick={handleDeleteTodoClick}>Delete</button>
-          </React.Fragment>
-        )}
-      </div>
+            {editLoading ? (
+              <span className='todo-list__todo-task todo-list__todo-task--editLoading'>Loading...</span>
+            ) : (
+              <>
+                {editing === true ? (
+                  <input
+                    type='text'
+                    name='task'
+                    className='todo-list__todo-edit-task-input'
+                    value={task}
+                    onChange={handleEditTodo}
+                  />
+                ) : (
+                  <span className='todo-list__todo-task'>{todo.task}</span>
+                )}
+              </>
+            )}
+          </label>
+
+          <div className='todo-list__todo-buttons-container'>
+            {editing === true ? (
+              <React.Fragment>
+                <button onClick={handleSaveEditedTodoClick}>Save</button>
+                <button onClick={handleCancelEditedTodoClick}>Cancel</button>
+              </React.Fragment>
+            ) : (
+              <React.Fragment>
+                <button onClick={handleEditTodoClick}>Edit</button>
+                <button onClick={handleDeleteTodoClick}>Delete</button>
+              </React.Fragment>
+            )}
+          </div>
+        </>
+      )}
     </li>
   );
 }

@@ -177,6 +177,10 @@ li.todo-list__todo > label:has(input[type="text"]) {
   border-color: var(--border-color);
 }
 
+.todo-list__todo-task--editLoading {
+  color: var(--dark-text-color);
+}
+
 /* edit, delete, save, cancel buttons */
 li.todo-list__todo button {
   background: none;
