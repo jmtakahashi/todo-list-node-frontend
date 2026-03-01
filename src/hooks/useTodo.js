@@ -63,12 +63,16 @@ export default function useTodo() {
     try {
       setError('');
 
+
+      // only do this if the update is not just toggling the completed status,
+      // but an update to the task text
+
       // this is where we add editloading: true to the updated todo immediately
       // so that the user sees the loading state right away.
       // then when we get the response from the server, we can update the state with the updated todo
       setTodos((prevTodos) =>
         prevTodos.map((todo) =>
-          todo._id === updatedTodo._id ? { ...todo, editLoading: true } : todo,
+          todo._id === updatedTodo._id && todo.completed === updatedTodo.completed ? { ...todo, editLoading: true } : todo,
         ),
       );
 
