@@ -1,13 +1,10 @@
 import React from 'react'
 import { useNavigate } from 'react-router';
-import { logInUser } from './api/authService';
+import { registerUser} from '../api/authService';
 
-export default function SignInForm({ setLoggedIn }) {
+export default function RegisterForm({ setLoggedIn }) {
   const navigate = useNavigate();
-  const [formValues, setFormValues] = React.useState({
-    email: '',
-    password: '',
-  });
+  const [formValues, setFormValues] = React.useState({ email: '', username: '', password: '' });
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState('');
 
@@ -16,11 +13,11 @@ export default function SignInForm({ setLoggedIn }) {
     setFormValues((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSignIn = async (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await logInUser(formValues);
+      const response = await registerUser(formValues);
       const token = response.data.token;
       localStorage.setItem('token', token);
       setLoggedIn(true);
@@ -29,7 +26,7 @@ export default function SignInForm({ setLoggedIn }) {
       setError(error.response.data.message);
     } finally {
       setLoading(false);
-    }
+    }  
   };
 
   return (
@@ -38,11 +35,12 @@ export default function SignInForm({ setLoggedIn }) {
         <p>Loading...</p>
       ) : (
         <div className='todo-list__auth-form-container'>
-          <h2>Sign In</h2>
+          <h2>Sign Up</h2>
+          <p>Create an account to use your Todo List across devices</p>
           {error && <div className='error'>{error}</div>}
           <form
-            id='signInForm'
-            onSubmit={handleSignIn}
+            id='registerForm'
+            onSubmit={handleRegister}
             className='todo-list__auth-form'
           >
             <label htmlFor='email'>Email</label>
@@ -54,6 +52,17 @@ export default function SignInForm({ setLoggedIn }) {
               onChange={handleUpdateForm}
               value={formValues.email}
               autoComplete='email'
+              required
+            />
+            <label htmlFor='username'>Username</label>
+            <input
+              id='username'
+              name='username'
+              type='username'
+              placeholder='Username'
+              onChange={handleUpdateForm}
+              value={formValues.username}
+              autoComplete='username'
               required
             />
             <label htmlFor='password'>Password</label>

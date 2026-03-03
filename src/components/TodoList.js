@@ -1,5 +1,5 @@
 import React from 'react'
-import useTodo from './hooks/useTodo';
+import useTodo from '../hooks/useTodo';
 import TodoComposer from './TodoComposer';
 import Todo from './Todo';
 
