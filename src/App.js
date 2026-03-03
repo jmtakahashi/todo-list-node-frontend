@@ -8,7 +8,7 @@ import * as authService from './api/authService';
 function App() {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
-  const [error, setError] = React.useState(null);
+  const [error, setError] = React.useState('');
   const [loading, setLoading] = React.useState(false);
 
   React.useEffect(() => {
