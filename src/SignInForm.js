@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function SignInForm({ handleSignIn }) {
+export default function SignInForm({ handleSignIn, error }) {
   const [formValues, setFormValues] = React.useState({ email: '', password: '' });
 
   const handleUpdateForm = (e) => {
@@ -16,6 +16,7 @@ export default function SignInForm({ handleSignIn }) {
   return (
     <div className='todo-list__auth-form-container'>
       <h2>Sign In</h2>
+      {error && <div className='error'>{error}</div>}
       <form
         id='signInForm'
         onSubmit={handleSignInClick}

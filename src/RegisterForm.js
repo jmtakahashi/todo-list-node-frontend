@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function RegisterForm({ handleRegister }) {
+export default function RegisterForm({ handleRegister, error }) {
 const [formValues, setFormValues] = React.useState({ email: '', username: '', password: '' });
 
   const handleUpdateForm = (e) => {
@@ -17,6 +17,7 @@ const [formValues, setFormValues] = React.useState({ email: '', username: '', pa
     <div className='todo-list__auth-form-container'>
       <h2>Sign Up</h2>
       <p>Create an account to use your Todo List across devices</p>
+      {error && <div className='error'>{error}</div>}
       <form
         id='registerForm'
         onSubmit={handleRegisterClick}

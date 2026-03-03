@@ -11,6 +11,13 @@ function App() {
   const [error, setError] = React.useState(null);
   const [loading, setLoading] = React.useState(false);
 
+  React.useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      setIsLoggedIn(true);
+    }
+  }, []);
+
   const handleRegister = async (formValues) => {
     setLoading(true);
     setError(null);
@@ -59,10 +66,6 @@ function App() {
 
   return (
     <div className='container'>
-      {error && <div className='error'>{error}</div>}
-
-      {loading && <div className='loading'>Loading...</div>}
-
       <header className='header'>
         <h1>Todo List</h1>
         <div className='todo-list__auth-buttons-container'>
@@ -83,17 +86,23 @@ function App() {
         </div>
       </header>
       <main>
-        <Routes>
-          <Route path='/' element={<TodoList isLoggedIn={isLoggedIn} />} />
-          <Route
-            path='/register'
-            element={<RegisterForm handleRegister={handleRegister} />}
-          />
-          <Route
-            path='/signin'
-            element={<SignInForm handleSignIn={handleSignIn} />}
-          />
-        </Routes>
+        {loading ? (
+          <p>Loading...</p>
+        ) : (
+          <Routes>
+            <Route path='/' element={<TodoList />} />
+            <Route
+              path='/register'
+              element={
+                <RegisterForm handleRegister={handleRegister} error={error} />
+              }
+            />
+            <Route
+              path='/signin'
+              element={<SignInForm handleSignIn={handleSignIn} error={error} />}
+            />
+          </Routes>
+        )}
       </main>
       <footer className='footer'>
         <span>
