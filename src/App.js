@@ -8,7 +8,6 @@ import * as authService from './api/authService';
 function App() {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
-  const [user, setUser] = React.useState(null);
   const [error, setError] = React.useState(null);
   const [loading, setLoading] = React.useState(false);
 
@@ -80,7 +79,6 @@ function App() {
             </Link>
           )}
         </div>
-        {user && <span>You are logged in as {user.username}</span>}
       </header>
       <main>
         <Routes>
