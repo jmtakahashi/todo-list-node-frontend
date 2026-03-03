@@ -1,118 +1,49 @@
 import React from 'react';
-import { Routes, Route, Link, useNavigate } from 'react-router';
+import { BrowserRouter, Routes, Route } from 'react-router';
 import TodoList from './TodoList';
+import Header from './Header';
 import SignInForm from './SignInForm';
 import RegisterForm from './RegisterForm';
-import * as authService from './api/authService';
+import Footer from './Footer';
 
 function App() {
-  const navigate = useNavigate();
-  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
-  const [error, setError] = React.useState('');
-  const [loading, setLoading] = React.useState(false);
+  const [loggedIn, setLoggedIn] = React.useState(false);
 
   React.useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
-      setIsLoggedIn(true);
+      setLoggedIn(true);
     }
   }, []);
 
-  const handleRegister = async (formValues) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await authService.registerUser(formValues);
-      const token = response.data.token;
-      localStorage.setItem('token', token);
-      setIsLoggedIn(true);
-      navigate('/');
-    } catch (error) {
-      setError(error.response.data.message);
-    } finally {
-      setLoading(false);
-    }    
-  }
-
-  const handleSignIn = async (formValues) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await authService.logInUser(formValues);
-      const token = response.data.token;
-      localStorage.setItem('token', token);
-      setIsLoggedIn(true);
-      navigate('/');
-    } catch (error) {
-      setError(error.response.data.message);
-    } finally {
-      setLoading(false);
-    }
-  }
-  
-  const handleSignOut = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      localStorage.removeItem('token');
-      setIsLoggedIn(false);
-      navigate('/signin'); // Navigate to the sign-in page after signing out  
-    } catch (error) {
-      setError(error.message);
-    } finally {
-      setLoading(false);
-    }
-  }
-
   return (
-    <div className='container'>
-      <header className='header'>
-        <h1>Todo List</h1>
-        <div className='todo-list__auth-buttons-container'>
-          {isLoggedIn ? (
-            <button className='todo-list__auth-button' onClick={handleSignOut}>
-              Sign Out
-            </button>
-          ) : (
-            <>
-              <Link className='todo-list__auth-button' to='/register'>
-                Register
-              </Link>
-              <Link className='todo-list__auth-button' to='/signin'>
-                Sign In
-              </Link>
-            </>
-          )}
-        </div>
-      </header>
-      <main>
-        {loading ? (
-          <p>Loading...</p>
-        ) : (
+    <BrowserRouter>
+      <div className='container'>
+        <Header setLoggedIn={setLoggedIn} />
+        <main>
           <Routes>
-            <Route path='/' element={<TodoList isLoggedIn={isLoggedIn} />} />
+            <Route path='/' element={loggedIn ? <TodoList /> : <SignInForm setLoggedIn={setLoggedIn} />} />
             <Route
               path='/register'
               element={
-                <RegisterForm handleRegister={handleRegister} error={error} />
+                <RegisterForm
+                  setLoggedIn={setLoggedIn}
+                />
               }
             />
             <Route
               path='/signin'
-              element={<SignInForm handleSignIn={handleSignIn} error={error} />}
+              element={
+                <SignInForm
+                  setLoggedIn={setLoggedIn}
+                />
+              }
             />
           </Routes>
-        )}
-      </main>
-      <footer className='footer'>
-        <span>
-          Built with ❤️ by{' '}
-          <a href='https://whoisjaytee.com' target='_blank' rel='noreferrer'>
-            Jaytee
-          </a>
-        </span>
-      </footer>
-    </div>
+        </main>
+        <Footer />
+      </div>
+    </BrowserRouter>
   );
 }
 
