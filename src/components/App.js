@@ -19,7 +19,7 @@ function App() {
   return (
     <BrowserRouter>
       <div className='container'>
-        <Header setLoggedIn={setLoggedIn} />
+        <Header setLoggedIn={setLoggedIn} loggedIn={loggedIn} />
         <main>
           <Routes>
             <Route path='/' element={loggedIn ? <TodoList /> : <SignInForm setLoggedIn={setLoggedIn} />} />
