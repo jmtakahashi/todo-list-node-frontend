@@ -35,7 +35,61 @@ a {
 }
 
 header {
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.todo-list__auth-buttons-container {
+  display: flex;
+  gap: 1rem;
+}
+
+/* auth buttons - same style as li.todo-list__todo button */
+.todo-list__auth-button {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  color: var(--light-text-color);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.todo-list__auth-form-container h2,
+.todo-list__auth-form-container p {
   margin-bottom: 1rem;
+}
+
+
+form.todo-list__auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+form.todo-list__auth-form label {
+  display: none;
+}
+
+form.todo-list__auth-form input,
+form.todo-list__auth-form button {
+  color: var(--light-text-color);
+  border: 1px solid var(--border-color);
+  background-color: transparent;
+  padding: 1rem;
+  border-radius: .25em;
+  font-size: 1rem;
+}
+
+form.todo-list__auth-form input:focus {
+  outline: none;
+  border: 1px solid var(--accent-color);
+}
+
+form.todo-list__auth-form button {
+  cursor: pointer;
 }
 
 /* the main ul */

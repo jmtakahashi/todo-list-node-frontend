@@ -37,6 +37,7 @@ export default function TodoComposer({ handleAddTodo }) {
           placeholder='New todo task'
           onChange={handleUpdateLabel}
           value={label}
+          autoComplete='off'
           required
         />
         <button type='submit' disabled={label.length === 0}>
