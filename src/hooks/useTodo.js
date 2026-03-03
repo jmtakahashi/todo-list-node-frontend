@@ -4,7 +4,7 @@ import * as todoService from '../api/todoService';
 export default function useTodo() {
   // todo: { _id, task, completed, loading, editLoading }
   const [todos, setTodos] = React.useState([]);
-  const [loading, setLoading] = React.useState(true);
+  const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState('');
 
   // we need to memoize the functions we return from this hook so that 
