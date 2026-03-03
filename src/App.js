@@ -90,7 +90,7 @@ function App() {
           <p>Loading...</p>
         ) : (
           <Routes>
-            <Route path='/' element={<TodoList />} />
+            <Route path='/' element={<TodoList isLoggedIn={isLoggedIn} />} />
             <Route
               path='/register'
               element={
