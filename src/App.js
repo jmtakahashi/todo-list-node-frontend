@@ -66,17 +66,19 @@ function App() {
       <header className='header'>
         <h1>Todo List</h1>
         <div className='todo-list__auth-buttons-container'>
-          <Link className='todo-list__auth-button' to='/register'>
-            Register
-          </Link>
           {isLoggedIn ? (
             <button className='todo-list__auth-button' onClick={handleSignOut}>
               Sign Out
             </button>
           ) : (
-            <Link className='todo-list__auth-button' to='/signin'>
-              Sign In
-            </Link>
+            <>
+              <Link className='todo-list__auth-button' to='/register'>
+                Register
+              </Link>
+              <Link className='todo-list__auth-button' to='/signin'>
+                Sign In
+              </Link>
+            </>
           )}
         </div>
       </header>
