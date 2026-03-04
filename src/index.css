@@ -92,6 +92,11 @@ form.todo-list__auth-form button {
   cursor: pointer;
 }
 
+form.todo-list__auth-form button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
 /* the main ul */
 ul.todo-list__todos {
   display: flex;
@@ -254,6 +259,24 @@ footer {
 
 .error {
   color: red;
-  margin-bottom: 1rem;
   font-style: italic;
+}
+
+.auth-form-input-error-message-enter {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+.auth-form-input-error-message-enter-active {
+  opacity: 1;
+  transform: translateY(0px);
+  transition: opacity 330ms ease-out, transform 330ms ease-out;
+}
+.auth-form-input-error-message-exit {
+  opacity: 1;
+  transform: translateY(0px);
+}
+.auth-form-input-error-message-exit-active {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 330ms ease-out, transform 330ms ease-out;
 }

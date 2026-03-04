@@ -6,6 +6,8 @@ const api = axios.create({
 
 // errors will be caught in App.js and displayed to the user
 
+export const cancelToken = axios.CancelToken.source();
+
 // Register a new user
 export const registerUser = async (userData) => {
   const response = await api.post('/auth/register', userData);
