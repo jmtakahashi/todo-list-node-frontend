@@ -257,6 +257,10 @@ footer {
   color: var(--light-text-color);
 }
 
+.auth-error {
+  margin-bottom: 1rem;
+}
+
 .error {
   color: red;
   font-style: italic;

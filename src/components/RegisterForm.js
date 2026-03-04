@@ -196,7 +196,14 @@ export default function RegisterForm({ setLoggedIn }) {
       registerUser();
       return () => authService.cancelToken.cancel();
     }
-  }, [state.submitCount, state.email.value, dispatch, navigate, setLoggedIn, state.username.value, state.password.value]);
+  }, [
+    state.submitCount,
+    state.email.value,
+    state.username.value,
+    state.password.value,
+    navigate,
+    setLoggedIn,
+  ]);
 
   // this function runs all validation checks immediately before submitting.
   // the actual submission is in the usue effect above that is triggered by
@@ -227,7 +234,7 @@ export default function RegisterForm({ setLoggedIn }) {
         <div className='todo-list__auth-form-container'>
           <h2>Sign Up</h2>
           <p>Create an account to use your Todo List across devices</p>
-          {error && <div className='error'>{error}</div>}
+          {error && <div className='error auth-error'>{error}</div>}
           <form
             id='registerForm'
             onSubmit={handleRegister}
