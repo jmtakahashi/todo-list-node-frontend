@@ -7,27 +7,20 @@ import RegisterForm from './RegisterForm';
 import Footer from './Footer';
 
 function App() {
-  const [loggedIn, setLoggedIn] = React.useState(false);
-
-  React.useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      setLoggedIn(true);
-    }
-  }, []);
+  const [token, setToken] = React.useState(null);
 
   return (
     <BrowserRouter>
       <div className='container'>
-        <Header setLoggedIn={setLoggedIn} loggedIn={loggedIn} />
+        <Header setLoggedIn={setToken} token={token} />
         <main>
           <Routes>
-            <Route path='/' element={loggedIn ? <TodoList /> : <SignInForm setLoggedIn={setLoggedIn} />} />
+            <Route path='/' element={token ? <TodoList /> : <SignInForm setToken={setToken} />} />
             <Route
               path='/register'
               element={
                 <RegisterForm
-                  setLoggedIn={setLoggedIn}
+                  setToken={setToken}
                 />
               }
             />
@@ -35,7 +28,7 @@ function App() {
               path='/signin'
               element={
                 <SignInForm
-                  setLoggedIn={setLoggedIn}
+                  setToken={setToken}
                 />
               }
             />

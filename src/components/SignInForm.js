@@ -5,7 +5,7 @@ import { CSSTransition } from 'react-transition-group';
 import * as authService from '../api/authService';
 import validator from 'validator';
 
-export default function SignInForm({ setLoggedIn }) {
+export default function SignInForm({ setToken }) {
   const emailRef = React.useRef(null);
   const passwordRef = React.useRef(null);
 
@@ -105,8 +105,7 @@ export default function SignInForm({ setLoggedIn }) {
           });
           console.log(response);
           const token = response.data.token;
-          localStorage.setItem('token', token);
-          setLoggedIn(true);
+          setToken(token);
           navigate('/');
         } catch (error) {
           setError(error.response.data.message);
@@ -121,7 +120,7 @@ export default function SignInForm({ setLoggedIn }) {
     state.submitCount,
     state.email.value,
     state.password.value,
-    setLoggedIn,
+    setToken,
     navigate,
   ]);
 
