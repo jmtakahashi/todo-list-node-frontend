@@ -16,10 +16,10 @@ export default function useTodo() {
   // which will cause the state to update on every render, which will cause 
   // the component to re-render on every render, and so on.
 
-  const fetchTodos = React.useCallback(async () => {
+  const fetchTodos = React.useCallback(async (token) => {
     try {
       setLoading(true);
-      const response = await todoService.fetchTodos();
+      const response = await todoService.fetchTodos(token);
       if (response.status === 200) {
         const fetchedTodos = response.data; // the response from the server will be an array of todos
         setTodos(fetchedTodos);
@@ -32,7 +32,7 @@ export default function useTodo() {
     }
   }, []);
 
-  const addTodo = React.useCallback(async (newTodo) => { 
+  const addTodo = React.useCallback(async (newTodo, token) => { 
     try {
       setError('');
 
@@ -44,7 +44,7 @@ export default function useTodo() {
 
       setTodos((prevTodos) => [...prevTodos, { ...newTodo, id: Math.random().toString(36).substr(2, 9), loading: true }]);
 
-      const response = await todoService.addTodo(newTodo);
+      const response = await todoService.addTodo(newTodo, token);
       if (response.status === 200) {
         const newTodoWithId = response.data; // the response from the server will be the new todo that was added w/ the generated _id
         setTodos(prevTodos => prevTodos.map(todo =>
@@ -59,7 +59,7 @@ export default function useTodo() {
     }
   }, []);
 
-  const updateTodo = React.useCallback(async (updatedTodo) => {
+  const updateTodo = React.useCallback(async (updatedTodo, token) => {
     try {
       setError('');
 
@@ -76,7 +76,7 @@ export default function useTodo() {
         ),
       );
 
-      const response = await todoService.updateTodo(updatedTodo);
+      const response = await todoService.updateTodo(updatedTodo, token);
       if (response.status === 200) {
         setTodos((prevTodos) =>
           prevTodos.map((todo) =>
@@ -92,7 +92,7 @@ export default function useTodo() {
     }
   }, []);
 
-  const deleteTodo = React.useCallback(async (id) => {
+  const deleteTodo = React.useCallback(async (id, token) => {
     try {
       setError('');
 
@@ -102,7 +102,7 @@ export default function useTodo() {
       // we can update the state and remove the deleted todo.
       setTodos((prevTodos) => prevTodos.map(todo => todo._id === id ? { ...todo, loading: true } : todo));
 
-      const response = await todoService.deleteTodo(id);
+      const response = await todoService.deleteTodo(id, token);
       if (response.status === 200) {
         setTodos((prevTodos) => prevTodos.filter((todo) => todo._id !== id));
       }

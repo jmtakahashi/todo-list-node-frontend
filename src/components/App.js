@@ -12,10 +12,10 @@ function App() {
   return (
     <BrowserRouter>
       <div className='container'>
-        <Header setLoggedIn={setToken} token={token} />
+        <Header setToken={setToken} token={token} />
         <main>
           <Routes>
-            <Route path='/' element={token ? <TodoList /> : <SignInForm setToken={setToken} />} />
+            <Route path='/' element={token ? <TodoList token={token} /> : <SignInForm setToken={setToken} />} />
             <Route
               path='/register'
               element={

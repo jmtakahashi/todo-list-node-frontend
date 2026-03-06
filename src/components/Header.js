@@ -1,12 +1,13 @@
 import React from 'react'
 import { Link, useNavigate } from 'react-router';
+import { logOutUser } from '../api/authService';
 
 export default function Header({ token, setToken }) {
   const navigate = useNavigate();
 
   const handleSignOut = async () => {
-    localStorage.removeItem('token');
-    setToken(false);
+    await logOutUser();
+    setToken(null);
     navigate('/'); // Navigate to the sign-in page after signing out    
   };
 

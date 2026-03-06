@@ -157,7 +157,7 @@ export default function RegisterForm({ setToken }) {
           // response.data will be true if email exists, false if it doesn't
           const response = await userService.getUserByEmail(
             state.email.value,
-            userService.cancelToken.token,
+            userService.cancelToken.accessToken,
           );
           dispatch({ type: 'emailUniqueResults', value: response.data });
         } catch (error) {

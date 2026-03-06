@@ -103,8 +103,7 @@ export default function SignInForm({ setToken }) {
             email: state.email.value,
             password: state.password.value,
           });
-          console.log(response);
-          const token = response.data.token;
+          const token = response.data.accessToken;
           setToken(token);
           navigate('/');
         } catch (error) {

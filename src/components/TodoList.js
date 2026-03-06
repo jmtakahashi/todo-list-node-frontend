@@ -3,18 +3,18 @@ import useTodo from '../hooks/useTodo';
 import TodoComposer from './TodoComposer';
 import Todo from './Todo';
 
-export default function TodoList() {
+export default function TodoList({ token }) {
   const { todos, loading, error, fetchTodos, addTodo, updateTodo, deleteTodo } = useTodo();
 
   React.useEffect(() => {
-    fetchTodos();
-  }, [fetchTodos]);
+    fetchTodos(token);
+  }, [fetchTodos, token]);
 
-  const handleAddTodo = (newTodo) => addTodo(newTodo);
+  const handleAddTodo = (newTodo) => addTodo(newTodo, token);
   
-  const handleUpdateTodo = (updatedTodo) => updateTodo(updatedTodo);
+  const handleUpdateTodo = (updatedTodo) => updateTodo(updatedTodo, token);
 
-  const handleDeleteTodo = (id) => deleteTodo(id);
+  const handleDeleteTodo = (id) => deleteTodo(id, token);
   
   return (
     <ul className='todo-list__todos'>

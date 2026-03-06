@@ -7,40 +7,40 @@ const api = axios.create({
 // errors will be caught in App.js and displayed to the user
 
 // Fetch all todos
-export const fetchTodos = async () => {
+export const fetchTodos = async (token) => {
   const response = await api.get('/todos', {
     headers: {
-      Authorization: `Bearer ${localStorage.getItem('token')}`,
+      Authorization: `Bearer ${token}`,
     },
   });
   return response;
 };
 
 // Add a new todo
-export const addTodo = async (todo) => {
+export const addTodo = async (todo, token) => {
   const response = await api.post('/todos/addTodo', todo, {
     headers: {
-      Authorization: `Bearer ${localStorage.getItem('token')}`,
+      Authorization: `Bearer ${token}`,
     },
   });
   return response;
 };
 
 // Update an existing todo
-export const updateTodo = async (updatedTodo) => {
+export const updateTodo = async (updatedTodo, token) => {
   const response = await api.patch(`/todos/${updatedTodo._id}`, updatedTodo, {
     headers: {
-      Authorization: `Bearer ${localStorage.getItem('token')}`,
+      Authorization: `Bearer ${token}`,
     },
   } );
   return response;
 };
 
 // Delete a todo
-export const deleteTodo = async (id) => {
+export const deleteTodo = async (id, token) => {
   const response = await api.delete(`/todos/${id}`, {
     headers: {
-      Authorization: `Bearer ${localStorage.getItem('token')}`,
+      Authorization: `Bearer ${token}`,
     },
   });
   return response;
