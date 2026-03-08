@@ -25,12 +25,18 @@ export default function TodoList() {
       {isError && <p>{error?.data?.message || 'An error occurred.'}</p>}
 
       {/* this map callback function is specific to RTK query results */}
-      {isSuccess &&
-        todos.ids.map((id) => {
-          const todo = todos.entities[id];
-          return <Todo key={todo._id ?? todo.id} todo={todo} />;
-        })
-      }
+      {isSuccess && (
+        <>
+          {todos.ids.length === 0 ? (
+            <p>You have no todos yet. Add one above!</p>
+          ) : (
+            todos.ids.map((id) => {
+              const todo = todos.entities[id];
+              return <Todo key={todo._id ?? todo.id} todo={todo} />;
+            })
+          )}
+        </>
+      )}
     </ul>
   );
 }
