@@ -1,13 +1,12 @@
 import React from 'react'
-import { useUpdateTodoMutation, useDeleteTodoMutation } from './todosSlice';
+import { useUpdateTodoMutation, useDeleteTodoMutation } from './todoApiSlice';
 import { useDispatch } from 'react-redux';
-import { setError } from '../errors/errorSlice';
+import { setGlobalError } from '../globalError/globalErrorSlice';
 
 export default function Todo({ todo }) {
   const [updateTodo, { isLoading: editLoading }] = useUpdateTodoMutation();
   const [deleteTodo, { isLoading: deleteLoading }] = useDeleteTodoMutation();
   const dispatch = useDispatch();
-
 
   // local state to manage the task text while editing
   const [task, setTask] = React.useState(todo.task);
@@ -19,7 +18,7 @@ export default function Todo({ todo }) {
       console.log('in Todo. updateTodo checkbox response: ', response);
     } catch (error) {
       console.error('in Todo. Error updating done state for todo: ', error);
-      dispatch(setError({ error: error.data?.message }))
+      dispatch(setGlobalError(error.data?.message || 'Error updating todo'))
     }
   };
 
@@ -39,7 +38,7 @@ export default function Todo({ todo }) {
       console.log('in Todo. updateTodo body response: ', response);
     } catch (error) {
       console.error('in Todo. Error saving edited todo: ', error);
-      dispatch(setError({ error: error.data?.message }))
+      dispatch(setGlobalError(error.data?.message || 'Error updating todo'))
     }
   };
 
@@ -55,7 +54,7 @@ export default function Todo({ todo }) {
       console.log('in Todo. deleteTodo response: ', response);
     } catch (error) {
       console.error('in Todo. Error deleting todo: ', error);
-      dispatch(setError({ error: error.data?.message }))
+      dispatch(setGlobalError(error.data?.message || 'Error deleting todo'))
     }
   };
 

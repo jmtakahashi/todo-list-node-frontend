@@ -1,20 +1,21 @@
 import React from 'react'
+import { useDispatch } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { useAddTodoMutation } from './todosSlice';
-import { useDispatch } from 'react-redux';
-import { setError } from '../errors/errorSlice';
+import { useAddTodoMutation } from './todoApiSlice';
+import { setGlobalError } from '../globalError/globalErrorSlice';
 
 export default function TodoComposer() {
   const inputRef = React.useRef(null);
 
-  const [addTodo, { isLoading }] = useAddTodoMutation();
+  const [addTodo, { isLoading, isError, error }] = useAddTodoMutation();
 
   const dispatch = useDispatch();
 
   // local state for new todo label
   const [task, setTask] = React.useState('');
 
+  // focus the input field when the component mounts
   React.useEffect(() => {
     inputRef.current.focus();
   }, []);
@@ -29,15 +30,22 @@ export default function TodoComposer() {
         // RTK Query will handle that for us and give us the result of the mutation (or any error) in the returned object
         const response = await addTodo({ task: task }).unwrap();
         console.log('in TodoComposer. response: ', response);
-        setTask('');
+        setTask(''); // clear the input field after successful submission
       } catch (error) {
         console.error('in TodoComposer. Error adding todo: ', error);
-        dispatch(setError({ error: error.data?.message }))
+        dispatch(setGlobalError(error.data?.message || 'Failed to add todo. Please try again.'));
       } finally {
      }
     }
     inputRef.current.focus();
   }
+
+  // TESTING: checking error and isError states from the mutation hook
+  React.useEffect(() => {
+    if (isError) {
+      console.error('in TodoComposer. isError is true. error: ', error);
+    }
+  }, [isError, error]);
 
   return (
     <li>
@@ -48,7 +56,8 @@ export default function TodoComposer() {
       >
         <input
           ref={inputRef}
-          name='new-todo'
+          id='newTodo'
+          name='newTodo'
           type='text'
           placeholder='New todo task'
           onChange={(e) => setTask(e.target.value)}
@@ -56,7 +65,7 @@ export default function TodoComposer() {
           autoComplete='off'
           required
         />
-        <button type='submit' disabled={task.length === 0}>
+        <button type='submit' disabled={!canSubmit}>
           <FontAwesomeIcon icon={faPlus} />
         </button>
       </form>

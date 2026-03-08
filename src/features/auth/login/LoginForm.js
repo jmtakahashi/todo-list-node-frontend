@@ -1,17 +1,20 @@
 import React from 'react'
 import { useNavigate } from 'react-router';
-import { CSSTransition } from 'react-transition-group';
 import { useSelector, useDispatch } from 'react-redux';
+import { CSSTransition } from 'react-transition-group';
 import { setToken } from '../authSlice';
 import { useLoginMutation } from '../authApiSlice';
 import { selectEmail, selectPassword, setEmail, setPassword, setError, getLoginError } from './loginSlice';
 
 export default function LoginForm() {
+  // refs for CSSTransition components
   const emailRef = React.useRef(null);
   const passwordRef = React.useRef(null);
+
+  // ref for error message div (not available unless an error is present)
   const errorRef = React.useRef(null);
 
-  // email and password are objects containing value, hasErrors, and message properties
+  // email and password are objects containing value, hasErrors, and errorMessage properties
   const email = useSelector(selectEmail);
   const password = useSelector(selectPassword);
   const error = useSelector(getLoginError);
@@ -27,12 +30,20 @@ export default function LoginForm() {
     emailRef.current.focus();
   }, [emailRef]);
 
-  // reset response error message when email or password changes
+  // set focus on error field if error is present
+  React.useEffect(() => {
+    if (error) {
+      errorRef.current.focus();
+    }
+  }, [error]);
+
+  // reset errorMessage when email or password changes
   React.useEffect(() => {
     dispatch(setError(''));
   }, [email.value, password.value, dispatch]);
 
-  const canSubmit = Boolean(email.value) && Boolean(password.value) && !isLoading;
+  const canSubmit =
+    Boolean(email.value) && Boolean(password.value) && !isLoading;
 
   const handleLogIn = async (e) => {
     e.preventDefault();
@@ -41,17 +52,15 @@ export default function LoginForm() {
         email: email.value,
         password: password.value,
       }).unwrap();
-      console.log('in LoginForm. response: ', response);
+      // console.log('in LoginForm. response: ', response);
       dispatch(setToken({ token: response.accessToken }));
       dispatch(setEmail(''));
       dispatch(setPassword(''));
       dispatch(setError(''));
-      navigate('/');
+      navigate('/todoList');
     } catch (error) {
       console.error('in LoginForm. Error logging in user: ', error);
-      dispatch(setError({ error: error.data?.message }));
-      // errorRef.current.focus();
-    } finally {
+      dispatch(setError( error.data?.message || 'An error occurred during login. Please try again.' ));
     }
   };
 
@@ -61,14 +70,14 @@ export default function LoginForm() {
         <p>Loading...</p>
       ) : (
         <div className='todo-list__auth-form-container'>
-          <h2>Sign In</h2>
+          <h2>Log In</h2>
           {error && (
             <div ref={errorRef} className='error auth-error'>
               {error}
             </div>
           )}
           <form
-            id='logInForm'
+            id='loginForm'
             onSubmit={handleLogIn}
             className='todo-list__auth-form'
           >
@@ -92,7 +101,7 @@ export default function LoginForm() {
               unmountOnExit
             >
               <div ref={emailRef} className='error'>
-                {email.message}
+                {email.errorMessage}
               </div>
             </CSSTransition>
             <label htmlFor='password'>Password</label>
@@ -103,7 +112,7 @@ export default function LoginForm() {
               placeholder='Password'
               onChange={(e) => dispatch(setPassword(e.target.value))}
               value={password.value}
-              autoComplete='current-password'
+              autoComplete='off'
               required
             />
             <CSSTransition
@@ -118,7 +127,7 @@ export default function LoginForm() {
               </div>
             </CSSTransition>
             <button type='submit' disabled={!canSubmit}>
-              Sign In
+              Log In
             </button>
           </form>
         </div>

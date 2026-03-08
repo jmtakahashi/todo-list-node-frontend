@@ -1,27 +1,24 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router';
-import TodoList from '../features/todos/TodoList';
+import TodoList from '../features/todo/TodoList';
 import Header from './Header';
+import Home from './Home';
 import LoginForm from '../features/auth/login/LoginForm';
 import RegisterForm from '../features/auth/register/RegisterForm';
 import Footer from './Footer';
 import Prefetch from '../features/auth/Prefetch';
-import { useSelector } from 'react-redux';
 
 function App() {
-  const token = useSelector((state) => state.auth.token);
-
-  console.log('in App. token: ', token);
-
   return (
     <BrowserRouter>
       <div className='container'>
         <Header />
         <main>
           <Routes>
-            <Route path='/' element={ token ? <Prefetch><TodoList /></Prefetch> : <LoginForm /> }/>
+            <Route path='/' element={ <Home /> }/>
             <Route path='/register' element={ <RegisterForm /> }/>
             <Route path='/login' element={ <LoginForm/> }/>
+            <Route path='/todoList' element={<Prefetch><TodoList /></Prefetch>}/>
           </Routes>
         </main>
         <Footer />

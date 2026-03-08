@@ -4,18 +4,18 @@ const initialState = {
   email: {
     value: '',
     hasErrors: false,
-    message: '',
+    errorMessage: '',
     isUnique: false,
   },
   username: {
     value: '',
     hasErrors: false,
-    message: '',
+    errorMessage: '',
   },
   password: {
     value: '',
     hasErrors: false,
-    message: '',
+    errorMessage: '',
   },
   status: 'idle', // 'idle' | 'loading' | 'succeeded' | 'failed'
   error: null,
@@ -28,23 +28,23 @@ export const registerSlice = createSlice({
     setEmail: (state, action) => { 
       state.email.value = action.payload;
       state.email.hasErrors = false;
-      state.email.message = '';
+      state.email.errorMessage = '';
     },
     setUsername: (state, action) => {
       state.username.value = action.payload;
       state.username.hasErrors = false;
-      state.username.message = '';
+      state.username.errorMessage = '';
     },
     setPassword: (state, action) => {
       state.password.value = action.payload;
       state.password.hasErrors = false;
-      state.password.message = '';
+      state.password.errorMessage = '';
     },
     setError: (state, action) => {
-      state.error = action.payload.error;
+      state.error = action.payload;
     },
     setStatus: (state, action) => {
-      state.status = action.payload.status;
+      state.status = action.payload;
     }
   }
 });

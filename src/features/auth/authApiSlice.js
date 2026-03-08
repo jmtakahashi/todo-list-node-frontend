@@ -25,6 +25,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
       async onQueryStarted(arg, { dispatch, queryFulfilled }) { 
         try {
           const { data } = await queryFulfilled;
+          // data is expected to be { message: 'Logged out successfully' }, the response from server
           console.log('in authApiSlice logout onQueryStarted. data: ', data);
           dispatch(clearToken());
           // clear out cached data, subscriptions and anything to do with our api
@@ -34,6 +35,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
         }
       }
     }),
+    // requests to this endpoint will already contain the access token in the header as set in app/api/apiSlice.js,
     refresh: builder.mutation({
       query: () => ({
         url: '/auth/refresh',
@@ -46,4 +48,4 @@ export const authApiSlice = apiSlice.injectEndpoints({
 // these hooks are auto-generated based on the defined endpoints
 // (if its a mutation endpoint, we use `use[EndpointName]Mutation`,
 // if it's a query endpoint, we use `use[EndpointName]Query`)
-export const { useRegisterMutation, useLoginMutation, useLogoutMutation } = authApiSlice;
+export const { useRegisterMutation, useLoginMutation, useLogoutMutation, useRefreshMutation } = authApiSlice;

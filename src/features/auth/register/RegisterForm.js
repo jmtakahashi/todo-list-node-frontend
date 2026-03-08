@@ -1,22 +1,24 @@
 import React from 'react'
 import { useNavigate } from 'react-router';
-import { CSSTransition } from 'react-transition-group';
 import { useSelector, useDispatch } from 'react-redux';
+import { CSSTransition } from 'react-transition-group';
 import { setToken } from '../authSlice';
 import { useRegisterMutation } from '../authApiSlice';
 import { selectEmail, selectUsername, selectPassword, setEmail, setUsername, setPassword, getRegisterError, setError } from './registerSlice';
-// import { USERNAME_REGEX, EMAIL_REGEX, PASSWORD_REGEX} from '../../../utils/regex'
 
 export default function RegisterForm() {
-  const usernameRef = React.useRef(null);
+  // refs for CSSTransition components
   const emailRef = React.useRef(null);
+  const usernameRef = React.useRef(null);
   const passwordRef = React.useRef(null);
+
+  // ref for error message div (not available unless an error is present)
   const errorRef = React.useRef(null);
 
-  // email, username and password are objects containing value, hasErrors, and message properties
-  const email = useSelector(selectEmail)
-  const username = useSelector(selectUsername)
-  const password = useSelector(selectPassword)
+  // email, username and password are objects containing value, hasErrors, and errorMessage properties
+  const email = useSelector(selectEmail);
+  const username = useSelector(selectUsername);
+  const password = useSelector(selectPassword);
   const error = useSelector(getRegisterError);
 
   const dispatch = useDispatch();
@@ -25,19 +27,28 @@ export default function RegisterForm() {
 
   const [registerUser, { isLoading }] = useRegisterMutation();
 
-
-  
   // set focus on email field when component mounts
   React.useEffect(() => {
     emailRef.current.focus();
   }, [emailRef]);
 
-  // reset response error message when email or password changes
+  // set focus on error field if error is present
+  React.useEffect(() => {
+    if (error) {
+      errorRef.current.focus();
+    }
+  }, [error]);
+
+  // reset errorMessage when email or password changes
   React.useEffect(() => {
     dispatch(setError(''));
   }, [email.value, username.value, password.value, dispatch]);
 
-  const canSubmit = Boolean(email.value) && Boolean(username.value) && Boolean(password.value) && !isLoading;
+  const canSubmit =
+    Boolean(email.value) &&
+    Boolean(username.value) &&
+    Boolean(password.value) &&
+    !isLoading;
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -47,17 +58,15 @@ export default function RegisterForm() {
         username: username.value,
         password: password.value,
       }).unwrap();
-      console.log('in RegisterForm. response: ', response);
+      // console.log('in RegisterForm. response: ', response);
       dispatch(setToken({ token: response.accessToken }));
       dispatch(setEmail(''));
       dispatch(setPassword(''));
       dispatch(setError(''));
-      navigate('/');
+      navigate('/todoList');
     } catch (error) {
       console.error('in RegisterForm. Error registering user: ', error);
-      dispatch(setError({ error: error.data?.message }));
-      // errorRef.current.focus();
-    } finally {
+      dispatch(setError( error.data?.message || 'An error occurred during registration. Please try again.' ));
     }
   };
 
@@ -69,23 +78,27 @@ export default function RegisterForm() {
         <div className='todo-list__auth-form-container'>
           <h2>Sign Up</h2>
           <p>Create an account to use your Todo List across devices</p>
-            {error && <div ref={errorRef} className='error auth-error'>{error}</div>}
+          {error && (
+            <div ref={errorRef} className='error auth-error'>
+              {error}
+            </div>
+          )}
           <form
             id='registerForm'
             onSubmit={handleRegister}
             className='todo-list__auth-form'
           >
             <label htmlFor='email'>Email</label>
-              <input
-                ref={emailRef}
-                id='email'
-                name='email'
-                type='email'
-                placeholder='Email'
-                onChange={(e) => dispatch(setEmail(e.target.value))}
-                value={email.value}
-                autoComplete='email'
-                required
+            <input
+              ref={emailRef}
+              id='email'
+              name='email'
+              type='email'
+              placeholder='Email'
+              onChange={(e) => dispatch(setEmail(e.target.value))}
+              value={email.value}
+              autoComplete='off'
+              required
             />
             <CSSTransition
               nodeRef={emailRef}
@@ -95,7 +108,7 @@ export default function RegisterForm() {
               unmountOnExit
             >
               <div ref={emailRef} className='error'>
-                {email.message}
+                {email.errorMessage}
               </div>
             </CSSTransition>
             <label htmlFor='username'>Username</label>
@@ -106,7 +119,7 @@ export default function RegisterForm() {
               placeholder='Username'
               onChange={(e) => dispatch(setUsername(e.target.value))}
               value={username.value}
-              autoComplete='username'
+              autoComplete='off'
               required
             />
             <CSSTransition
@@ -117,7 +130,7 @@ export default function RegisterForm() {
               unmountOnExit
             >
               <div ref={usernameRef} className='error'>
-                {username.message}
+                {username.errorMessage}
               </div>
             </CSSTransition>
             <label htmlFor='password'>Password</label>
@@ -128,7 +141,7 @@ export default function RegisterForm() {
               placeholder='Password'
               onChange={(e) => dispatch(setPassword(e.target.value))}
               value={password.value}
-              autoComplete='current-password'
+              autoComplete='off'
               required
             />
             <CSSTransition
@@ -139,7 +152,7 @@ export default function RegisterForm() {
               unmountOnExit
             >
               <div ref={passwordRef} className='error'>
-                {password.message}
+                {password.errorMessage}
               </div>
             </CSSTransition>
             <button type='submit' disabled={!canSubmit}>
