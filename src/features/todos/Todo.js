@@ -1,12 +1,26 @@
 import React from 'react'
+import { useUpdateTodoMutation, useDeleteTodoMutation } from './todosSlice';
+import { useDispatch } from 'react-redux';
+import { setError } from '../errors/errorSlice';
 
-export default function Todo({ todo, handleUpdateTodo, handleDeleteTodo, loading=false, editLoading=false }) {
+export default function Todo({ todo }) {
+  const [updateTodo, { isLoading: editLoading }] = useUpdateTodoMutation();
+  const [deleteTodo, { isLoading: deleteLoading }] = useDeleteTodoMutation();
+  const dispatch = useDispatch();
+
+
   // local state to manage the task text while editing
   const [task, setTask] = React.useState(todo.task);
   const [editing, setEditing] = React.useState(false);
 
-  const handleCheckboxClick = () => {
-    handleUpdateTodo({ ...todo, completed: !todo.completed });
+  const handleCheckboxClick = async () => {
+    try {
+      const response = await updateTodo({ id: todo._id, updatedFields: { completed: !todo.completed } }).unwrap();
+      console.log('in Todo. updateTodo checkbox response: ', response);
+    } catch (error) {
+      console.error('in Todo. Error updating done state for todo: ', error);
+      dispatch(setError({ error: error.data?.message }))
+    }
   };
 
   const handleEditTodoClick = (e) => {
@@ -18,9 +32,15 @@ export default function Todo({ todo, handleUpdateTodo, handleDeleteTodo, loading
     setTask(e.target.value);
   };
 
-  const handleSaveEditedTodoClick = () => {
-    handleUpdateTodo({ ...todo, task });
+  const handleSaveEditedTodoClick = async () => {
     setEditing(false);
+    try {
+      const response = await updateTodo({ id: todo._id, updatedFields: { task: task } }).unwrap();
+      console.log('in Todo. updateTodo body response: ', response);
+    } catch (error) {
+      console.error('in Todo. Error saving edited todo: ', error);
+      dispatch(setError({ error: error.data?.message }))
+    }
   };
 
   const handleCancelEditedTodoClick = () => {
@@ -29,13 +49,19 @@ export default function Todo({ todo, handleUpdateTodo, handleDeleteTodo, loading
     setEditing(false);
   }
 
-  const handleDeleteTodoClick = () => {
-    handleDeleteTodo(todo._id);
+  const handleDeleteTodoClick = async () => {
+    try {
+      const response = await deleteTodo(todo._id).unwrap();
+      console.log('in Todo. deleteTodo response: ', response);
+    } catch (error) {
+      console.error('in Todo. Error deleting todo: ', error);
+      dispatch(setError({ error: error.data?.message }))
+    }
   };
 
   return (
     <li className='todo-list__todo'>
-      {loading === true ? (
+      {deleteLoading ? (
         <span>Loading...</span>
       ) : (
         <>

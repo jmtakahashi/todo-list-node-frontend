@@ -1,37 +1,27 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router';
-import TodoList from './TodoList';
+import TodoList from '../features/todos/TodoList';
 import Header from './Header';
-import SignInForm from './SignInForm';
-import RegisterForm from './RegisterForm';
+import LoginForm from '../features/auth/login/LoginForm';
+import RegisterForm from '../features/auth/register/RegisterForm';
 import Footer from './Footer';
+import Prefetch from '../features/auth/Prefetch';
+import { useSelector } from 'react-redux';
 
 function App() {
-  const [token, setToken] = React.useState(null);
+  const token = useSelector((state) => state.auth.token);
+
+  console.log('in App. token: ', token);
 
   return (
     <BrowserRouter>
       <div className='container'>
-        <Header setToken={setToken} token={token} />
+        <Header />
         <main>
           <Routes>
-            <Route path='/' element={token ? <TodoList token={token} /> : <SignInForm setToken={setToken} />} />
-            <Route
-              path='/register'
-              element={
-                <RegisterForm
-                  setToken={setToken}
-                />
-              }
-            />
-            <Route
-              path='/signin'
-              element={
-                <SignInForm
-                  setToken={setToken}
-                />
-              }
-            />
+            <Route path='/' element={ token ? <Prefetch><TodoList /></Prefetch> : <LoginForm /> }/>
+            <Route path='/register' element={ <RegisterForm /> }/>
+            <Route path='/login' element={ <LoginForm/> }/>
           </Routes>
         </main>
         <Footer />
