@@ -278,11 +278,11 @@ export default function RegisterForm() {
               >
                 <FontAwesomeIcon icon={faInfoCircle} />
                 <p>
-                  4 to 24 characters.
+                  3 to 24 characters.
                   <br />
                   Must begin with a letter.
                   <br />
-                  Letters, numbers, underscores, hyphens allowed.
+                  Letters, numbers, underscores, and hyphens allowed.
                 </p>
               </div>
             </CSSTransition>
