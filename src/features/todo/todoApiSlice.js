@@ -1,10 +1,10 @@
-import { createSelector, createEntityAdapter } from "@reduxjs/toolkit";
+// import { createSelector, createEntityAdapter } from "@reduxjs/toolkit";
 import { apiSlice } from '../../app/api/apiSlice';
 
 // normalize data for faster lookups
 // also gives us methods to manipulate normalized data 
 // (addOne, addMany, setAll, removeOne, etc.)
-const todosAdapter = createEntityAdapter();
+// const todosAdapter = createEntityAdapter();
 
 // calling getInitialState() will create the initial state object with the following structure:
 // {
@@ -13,7 +13,7 @@ const todosAdapter = createEntityAdapter();
 // }
 // add extra properties to the initial state object by passing an object as an argument 
 // to getInitialState() (ex: { status: 'idle', error: null })
-const initialState = todosAdapter.getInitialState();
+// const initialState = todosAdapter.getInitialState();
 
 export const todoApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -31,15 +31,15 @@ export const todoApiSlice = apiSlice.injectEndpoints({
           return false; 
         },
       }),
-      transformResponse: (responseData) => {
-        // responseData is an array of todos, we want to normalize it so 
-        // RTK can work with it and return the normalized state object
-        const loadedUsers = responseData.map((todo) => ({
-          ...todo,
-          id: todo._id, // here we set id to the _id property coming from the backend
-        }));
-        return todosAdapter.setAll(initialState, loadedUsers);
-      },
+      // transformResponse: (responseData) => {
+      //   // responseData is an array of todos, we want to normalize it so 
+      //   // RTK can work with it and return the normalized state object
+      //   const loadedUsers = responseData.map((todo) => ({
+      //     ...todo,
+      //     id: todo._id, // here we set id to the _id property coming from the backend
+      //   }));
+      //   return todosAdapter.setAll(initialState, loadedUsers);
+      // },
       // providesTags: ['Todos'],
       providesTags: (result, error) => {
         if (result?.ids) {
@@ -49,7 +49,7 @@ export const todoApiSlice = apiSlice.injectEndpoints({
             ...result.ids.map((id) => ({ type: 'Todo', id })),
           ];
         } else {
-          // if we don't have a result, we want to provide a tag for the entire list so 
+          // if we don't have a result containing an ids property, we want to provide a tag for the entire list so 
           // that it will be refetched when a new todo is added
           return [{ type: 'Todo', id: 'LIST' }];
         }
@@ -64,9 +64,12 @@ export const todoApiSlice = apiSlice.injectEndpoints({
       }),
       // if a func is passed instead of an array, we can be more specific about which tags to invalidate
       // (ex: only invalidate the tag for the specific todo that was updated instead of all todos)
-      // the func receives the result of the mutation (in this case, the new todo that was created), 
-      // an error if the request failed and an arg object of arguments that were passed to the mutation 
+      // the func receives the result of the mutation (in this case, the new todo that was created),
+      // an error if the request failed and an arg object of arguments that were passed to the mutation
       // when it was called (in this case, the newTodo data).
+      // this should be based on how we are using providesTags in the fetchTodos query endpoint. 
+      // If we are providing a tag for each individual todo, then we should invalidate the specific 
+      // tag for each todo individually.
       invalidatesTags: [{ type: 'Todo', id: 'LIST' }],
     }),
     updateTodo: builder.mutation({
@@ -75,14 +78,14 @@ export const todoApiSlice = apiSlice.injectEndpoints({
         method: 'PATCH',
         body: updatedFields,
       }),
-      invalidatesTags: (result, error, arg) => [{ type: 'Todo', id: arg.id }],
+      invalidatesTags: [{ type: 'Todo', id: 'LIST'}],
     }),
     deleteTodo: builder.mutation({
       query: (id) => ({
         url: `/todos/${id}`,
         method: 'DELETE',
       }),
-      invalidatesTags: (result, error, arg) => [{ type: 'Todo', id: arg.id }],
+      invalidatesTags: [{ type: 'Todo', id: 'LIST'}],
     }),
   }),
 });
@@ -102,14 +105,14 @@ export const selectTodosResult = todoApiSlice.endpoints.fetchTodos.select();
 
 // creates a memoized selector
 // createSelector(inputFunc, outputFunc)
-const selectTodosData = createSelector(
-  selectTodosResult,
-  (todosResult) => todosResult.data // normalized state object with ids & entities
-);
+// const selectTodosData = createSelector(
+//   selectTodosResult,
+//   (todosResult) => todosResult.data // normalized state object with ids & entities
+// );
 
 // getSelectors creates these selectors and we rename them with aliases using destructuring
-export const {
-  selectAll: selectAllTodos,
-  selectById: selectTodoById,
-  selectIds: selectTodoIds,
-} = todosAdapter.getSelectors(state => selectTodosData(state) ?? initialState);
+// export const {
+//   selectAll: selectAllTodos,
+//   selectById: selectTodoById,
+//   selectIds: selectTodoIds,
+// } = todosAdapter.getSelectors(state => selectTodosData(state) ?? initialState);
