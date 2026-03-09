@@ -3,6 +3,13 @@ import { clearToken } from './authSlice';
 
 export const authApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
+    checkExistingUser: builder.mutation({
+      query: (email) => ({
+        url: '/users/checkExistingUser',
+        method: 'POST',
+        body: {email},
+      }),
+    }),
     register: builder.mutation({
       query: (userData) => ({
         url: '/auth/register',
@@ -22,7 +29,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
         url: '/auth/logout',
         method: 'POST',
       }),
-      async onQueryStarted(arg, { dispatch, queryFulfilled }) { 
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
           // data is expected to be { message: 'Logged out successfully' }, the response from server
@@ -31,9 +38,12 @@ export const authApiSlice = apiSlice.injectEndpoints({
           // clear out cached data, subscriptions and anything to do with our api
           dispatch(apiSlice.util.resetApiState());
         } catch (error) {
-          console.error('in authApiSlice logout onQueryStarted. Error logging out user: ', error);
+          console.error(
+            'in authApiSlice logout onQueryStarted. Error logging out user: ',
+            error,
+          );
         }
-      }
+      },
     }),
     // requests to this endpoint will already contain the access token in the header as set in app/api/apiSlice.js,
     refresh: builder.mutation({
@@ -48,4 +58,4 @@ export const authApiSlice = apiSlice.injectEndpoints({
 // these hooks are auto-generated based on the defined endpoints
 // (if its a mutation endpoint, we use `use[EndpointName]Mutation`,
 // if it's a query endpoint, we use `use[EndpointName]Query`)
-export const { useRegisterMutation, useLoginMutation, useLogoutMutation, useRefreshMutation } = authApiSlice;
+export const { useCheckExistingUserMutation, useRegisterMutation, useLoginMutation, useLogoutMutation, useRefreshMutation } = authApiSlice;

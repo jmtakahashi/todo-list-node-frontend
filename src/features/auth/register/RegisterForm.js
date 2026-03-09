@@ -2,20 +2,47 @@ import React from 'react'
 import { useNavigate } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 import { CSSTransition } from 'react-transition-group';
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 import { setToken } from '../authSlice';
-import { useRegisterMutation } from '../authApiSlice';
-import { selectEmail, selectUsername, selectPassword, setEmail, setUsername, setPassword, getRegisterError, setError } from './registerSlice';
+import { useCheckExistingUserMutation, useRegisterMutation } from '../authApiSlice';
+import {
+  selectEmail,
+  selectUsername,
+  selectPassword,
+  getRegisterError,
+  setEmail,
+  setEmailIsUnique,
+  setUsername,
+  setPassword,
+  setEmailError,
+  setUsernameError,
+  setPasswordError,
+  setRegisterError,
+  resetEmail,
+  resetUsername,
+  resetPassword,
+} from './registerSlice';
+import { USERNAME_REGEX, EMAIL_REGEX, PASSWORD_REGEX } from '../../../utils/regex';
 
 export default function RegisterForm() {
+  // refs for input components
+  const emailInputRef = React.useRef(null);
+  const usernameInputRef = React.useRef(null);
+  const passwordInputRef = React.useRef(null);
   // refs for CSSTransition components
-  const emailRef = React.useRef(null);
-  const usernameRef = React.useRef(null);
-  const passwordRef = React.useRef(null);
+  const emailInfoRef = React.useRef(null);
+  const usernameInfoRef = React.useRef(null);
+  const passwordInfoRef = React.useRef(null);
+  const emailErrorRef = React.useRef(null);
+  const usernameErrorRef = React.useRef(null);
+  const passwordErrorRef = React.useRef(null);
 
   // ref for error message div (not available unless an error is present)
   const errorRef = React.useRef(null);
 
-  // email, username and password are objects containing value, hasErrors, and errorMessage properties
+  // email, username and password are objects containing value, hasErrorss, and errorMessage properties
   const email = useSelector(selectEmail);
   const username = useSelector(selectUsername);
   const password = useSelector(selectPassword);
@@ -25,12 +52,13 @@ export default function RegisterForm() {
 
   const navigate = useNavigate();
 
+  const [checkExistingUser] = useCheckExistingUserMutation();
   const [registerUser, { isLoading }] = useRegisterMutation();
 
   // set focus on email field when component mounts
   React.useEffect(() => {
-    emailRef.current.focus();
-  }, [emailRef]);
+    emailInputRef.current.focus();
+  }, [emailInputRef]);
 
   // set focus on error field if error is present
   React.useEffect(() => {
@@ -39,17 +67,87 @@ export default function RegisterForm() {
     }
   }, [error]);
 
-  // reset errorMessage when email or password changes
+  // validate email, username and password when they change
   React.useEffect(() => {
-    dispatch(setError(''));
+    if (email.value) {
+      if (!EMAIL_REGEX.test(email.value)) {
+        dispatch(setEmailError('Invalid email format'));
+      } else {
+        dispatch(setEmailError(''));
+      }
+    } else {
+      dispatch(resetEmail());
+    }
+
+    if (username.value) {
+      if (!USERNAME_REGEX.test(username.value)) {
+        dispatch(setUsernameError('Invalid username format'));
+      } else {
+        dispatch(setUsernameError(''));
+      }
+    } else {
+      dispatch(resetUsername());
+    }
+
+    if (password.value) {
+      if (!PASSWORD_REGEX.test(password.value)) {
+        dispatch(setPasswordError('Invalid password format'));
+      } else {
+        dispatch(setPasswordError(''));
+      }
+    } else {
+      dispatch(resetPassword());
+    }
   }, [email.value, username.value, password.value, dispatch]);
+
+  // check for email uniqueness when email changes and is in valid format
+  React.useEffect(() => {
+    if (email.value && !email.hasErrors) {
+      const checkEmailForUniqueness = async () => {
+        try {
+          const response = await checkExistingUser(email.value);
+          const emailExists = response.data; // response.data is expected to be true if email exists, false if it doesn't
+          if (emailExists) {
+            dispatch(
+              setEmailIsUnique({
+                isUnique: false,
+                message: 'Email is already in use',
+              }),
+            );
+          } else {
+            dispatch(
+              setEmailIsUnique({
+                isUnique: true,
+                message: '',
+              }),
+            );
+          }
+        } catch (error) {
+          console.error(
+            'in RegisterForm. Error checking existing user: ',
+            error,
+          );
+          dispatch(
+            setEmailError(
+              error.data?.message ||
+                'Failed to check for existing email. Please try again.',
+            ),
+          );
+        }
+      }
+      checkEmailForUniqueness()
+    }
+  }, [email.value, email.hasErrors, checkExistingUser, dispatch]);
 
   const canSubmit =
     Boolean(email.value) &&
     Boolean(username.value) &&
     Boolean(password.value) &&
+    !email.hasErrors &&
+    !username.hasErrors &&
+    !password.hasErrors &&
     !isLoading;
-
+  
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
@@ -62,11 +160,16 @@ export default function RegisterForm() {
       dispatch(setToken({ token: response.accessToken }));
       dispatch(setEmail(''));
       dispatch(setPassword(''));
-      dispatch(setError(''));
+      dispatch(setRegisterError(''));
       navigate('/todoList');
     } catch (error) {
       console.error('in RegisterForm. Error registering user: ', error);
-      dispatch(setError( error.data?.message || 'An error occurred during registration. Please try again.' ));
+      dispatch(
+        setRegisterError(
+          error.data?.message ||
+            'An error occurred during registration. Please try again.',
+        ),
+      );
     }
   };
 
@@ -88,75 +191,161 @@ export default function RegisterForm() {
             onSubmit={handleRegister}
             className='todo-list__auth-form'
           >
-            <label htmlFor='email'>Email</label>
-            <input
-              ref={emailRef}
-              id='email'
-              name='email'
-              type='email'
-              placeholder='Email'
-              onChange={(e) => dispatch(setEmail(e.target.value))}
-              value={email.value}
-              autoComplete='off'
-              required
-            />
+            <div className='auth-form-input-wrapper'>
+              {Boolean(email.value) && !email.hasErrors && (
+                <div className='auth-form-input__valid'>✅</div>
+              )}
+              <label htmlFor='email'>Email</label>
+              <input
+                ref={emailInputRef}
+                id='email'
+                name='email'
+                type='email'
+                placeholder='Email'
+                onChange={(e) => dispatch(setEmail(e.target.value))}
+                value={email.value}
+                autoComplete='off'
+                required
+              />
+            </div>
             <CSSTransition
-              nodeRef={emailRef}
+              nodeRef={emailErrorRef}
               in={email.hasErrors}
               timeout={330}
               classNames='auth-form-input-error-message'
               unmountOnExit
             >
-              <div ref={emailRef} className='error'>
-                {email.errorMessage}
+              <div ref={emailErrorRef} className='error'>
+                ❌ {email.errorMessage}
               </div>
             </CSSTransition>
-            <label htmlFor='username'>Username</label>
-            <input
-              id='username'
-              name='username'
-              type='username'
-              placeholder='Username'
-              onChange={(e) => dispatch(setUsername(e.target.value))}
-              value={username.value}
-              autoComplete='off'
-              required
-            />
             <CSSTransition
-              nodeRef={usernameRef}
+              nodeRef={emailInfoRef}
+              in={Boolean(email.value) && email.hasErrors}
+              timeout={330}
+              classNames='auth-form-input-message'
+              unmountOnExit
+            >
+              <div
+                ref={emailInfoRef}
+                id='uidnote'
+                className='auth-form-input-message'
+              >
+                <FontAwesomeIcon icon={faInfoCircle} />
+                <p>Must be a valid email address.</p>
+              </div>
+            </CSSTransition>
+
+            <div className='auth-form-input-wrapper'>
+              {Boolean(username.value) && !username.hasErrors && (
+                <div className='auth-form-input__valid'>✅</div>
+              )}
+              <label htmlFor='username'>Username</label>
+              <input
+                ref={usernameInputRef}
+                id='username'
+                name='username'
+                type='username'
+                placeholder='Username'
+                onChange={(e) => dispatch(setUsername(e.target.value))}
+                value={username.value}
+                autoComplete='off'
+                required
+              />
+            </div>
+            <CSSTransition
+              nodeRef={usernameErrorRef}
               in={username.hasErrors}
               timeout={330}
               classNames='auth-form-input-error-message'
               unmountOnExit
             >
-              <div ref={usernameRef} className='error'>
-                {username.errorMessage}
+              <div ref={usernameErrorRef} className='error'>
+                ❌ {username.errorMessage}
               </div>
             </CSSTransition>
-            <label htmlFor='password'>Password</label>
-            <input
-              id='password'
-              name='password'
-              type='password'
-              placeholder='Password'
-              onChange={(e) => dispatch(setPassword(e.target.value))}
-              value={password.value}
-              autoComplete='off'
-              required
-            />
             <CSSTransition
-              nodeRef={passwordRef}
+              nodeRef={usernameInfoRef}
+              in={Boolean(username.value) && username.hasErrors}
+              timeout={330}
+              classNames='auth-form-input-message'
+              unmountOnExit
+            >
+              <div
+                ref={usernameInfoRef}
+                id='unamenote'
+                className='auth-form-input-message'
+              >
+                <FontAwesomeIcon icon={faInfoCircle} />
+                <p>
+                  4 to 24 characters.
+                  <br />
+                  Must begin with a letter.
+                  <br />
+                  Letters, numbers, underscores, hyphens allowed.
+                </p>
+              </div>
+            </CSSTransition>
+
+            <div className='auth-form-input-wrapper'>
+              {Boolean(password.value) && !password.hasErrors && (
+                <div className='auth-form-input__valid'>✅</div>
+              )}
+              <label htmlFor='password'>Password</label>
+              <input
+                ref={passwordInputRef}
+                id='password'
+                name='password'
+                type='password'
+                placeholder='Password'
+                onChange={(e) => dispatch(setPassword(e.target.value))}
+                value={password.value}
+                autoComplete='off'
+                required
+              />
+            </div>
+            <CSSTransition
+              nodeRef={passwordErrorRef}
               in={password.hasErrors}
               timeout={330}
               classNames='auth-form-input-error-message'
               unmountOnExit
             >
-              <div ref={passwordRef} className='error'>
-                {password.errorMessage}
+              <div ref={passwordErrorRef} className='error'>
+                ❌ {password.errorMessage}
               </div>
             </CSSTransition>
+            <CSSTransition
+              nodeRef={passwordInfoRef}
+              in={Boolean(password.value) && password.hasErrors}
+              timeout={330}
+              classNames='auth-form-input-message'
+              unmountOnExit
+            >
+              <div
+                ref={passwordInfoRef}
+                id='pwdnote'
+                className='auth-form-input-message'
+              >
+                <FontAwesomeIcon icon={faInfoCircle} />
+                <p>
+                  8 to 24 characters.
+                  <br />
+                  Must include uppercase and lowercase letters, a number and a
+                  special character.
+                  <br />
+                  Allowed special characters:{' '}
+                  <span aria-label='exclamation mark'>!</span>{' '}
+                  <span aria-label='at symbol'>@</span>{' '}
+                  <span aria-label='hashtag'>#</span>{' '}
+                  <span aria-label='dollar sign'>$</span>{' '}
+                  <span aria-label='percent'>%</span>
+                </p>
+              </div>
+            </CSSTransition>
+
             <button type='submit' disabled={!canSubmit}>
-              Sign Up
+              {isLoading ? 'Registering...' : 'Sign Up'}
             </button>
           </form>
         </div>

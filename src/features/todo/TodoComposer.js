@@ -34,8 +34,7 @@ export default function TodoComposer() {
       } catch (error) {
         console.error('in TodoComposer. Error adding todo: ', error);
         dispatch(setGlobalError(error.data?.message || 'Failed to add todo. Please try again.'));
-      } finally {
-     }
+      }
     }
     inputRef.current.focus();
   }

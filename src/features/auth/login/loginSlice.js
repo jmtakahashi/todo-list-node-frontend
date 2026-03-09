@@ -29,12 +29,26 @@ export const loginSlice = createSlice({
       state.password.hasErrors = false;
       state.password.errorMessage = '';
     },
-    setError: (state, action) => {
+    setEmailError: (state, action) => {
+      if (action.payload === '') {
+        state.email.hasErrors = false;
+        state.email.errorMessage = '';
+      } else {
+        state.email.hasErrors = true;
+        state.email.errorMessage = action.payload;
+      }
+    },
+    setLoginError: (state, action) => {
       state.error = action.payload;
     },
     setStatus: (state, action) => {
       state.status = action.payload;
-    }
+    },
+    resetEmail: (state) => {
+      state.email.value = '';
+      state.email.hasErrors = false;
+      state.email.errorMessage = '';
+    },
   },
 });
 
@@ -43,6 +57,6 @@ export const selectPassword = (state) => state.login.password;
 export const getLoginStatus = (state) => state.login.status;
 export const getLoginError = (state) => state.login.error;
 
-export const { setEmail, setPassword, setError, setStatus } = loginSlice.actions;
+export const { setEmail, setPassword, setEmailError, setLoginError, setStatus, resetEmail } = loginSlice.actions;
 
 export default loginSlice.reducer;

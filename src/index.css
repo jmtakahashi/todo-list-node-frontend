@@ -1,12 +1,15 @@
 :root {
   --primary-color: #0ba95b;
   --dark-background-color: #2a2a2a;
+  --dark-background-color-secondary: #252525;
   --light-background-color: #3a3a3a;
   --dark-text-color: #999;
   --light-text-color: #eee;
   --secondary-text-color: #999;
   --border-color: #ddd;
+  --border-radius: .25em;
   --accent-color: #0ba95b;
+  --error-color: #ff0000;
 }
 
 * {
@@ -22,10 +25,19 @@ body {
   background-color: var(--dark-background-color);
   color: var(--light-text-color);
   font-size: 1rem;
+  line-height: 1.5;
 }
 
 a {
   color: inherit;
+}
+
+input {
+  width: 100%;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  line-height: 1.2;
 }
 
 .container {
@@ -39,6 +51,11 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.welcome {
+  text-align: center;
+  padding: 2rem;
 }
 
 .todo-list__auth-buttons-container {
@@ -79,7 +96,7 @@ form.todo-list__auth-form button {
   border: 1px solid var(--border-color);
   background-color: transparent;
   padding: 1rem;
-  border-radius: .25em;
+  border-radius: var(--border-radius);
   font-size: 1rem;
 }
 
@@ -107,7 +124,7 @@ ul.todo-list__todos {
 ul.todo-list__todos li {
   list-style: none;
   padding: 0;
-  border-radius: .2em;
+  border-radius: var(--border-radius);
 }
 
 ul.todo-list__todos li:not(:first-child) {
@@ -131,7 +148,7 @@ form.todo-list__composer input, .todo-list__composer button {
   border: 1px solid var(--border-color);
   background-color: transparent;
   padding: 1rem;
-  border-radius: .25em;
+  border-radius: var(--border-radius);
   font-size: 1rem;
 }
 
@@ -223,7 +240,7 @@ li.todo-list__todo > label:has(input[type="text"]) {
   padding: .25em;
   background-color: transparent;
   border: 1px solid;
-  border-radius: .25em;
+  border-radius: var(--border-radius);
   font-size: 1rem;
   color: var(--light-text-color);
 }
@@ -262,8 +279,20 @@ footer {
 }
 
 .error {
-  color: red;
-  font-style: italic;
+  color: var(--error-color);
+}
+
+.auth-form-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.auth-form-input__valid {
+  display: block;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  line-height: normal;
 }
 
 .auth-form-input-error-message-enter {
@@ -280,6 +309,41 @@ footer {
   transform: translateY(0px);
 }
 .auth-form-input-error-message-exit-active {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 330ms ease-out, transform 330ms ease-out;
+}
+
+.auth-form-input-message {
+  display: flex;
+  gap: .75rem;
+  background-color: var(--dark-background-color-secondary);
+  color: var(--dark-text-color);
+  padding: 1rem;
+  border-radius: var(--border-radius);
+}
+
+.auth-form-input-message svg {
+  padding-top: 5px;
+}
+
+.auth-form-input-message-enter {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.auth-form-input-message-enter-active {
+  opacity: 1;
+  transform: translateY(0px);
+  transition: opacity 330ms ease-out;
+}
+
+.auth-form-input-message-exit {
+  opacity: 1;
+  transform: translateY(0px);
+}
+
+.auth-form-input-message-exit-active {
   opacity: 0;
   transform: translateY(-10px);
   transition: opacity 330ms ease-out, transform 330ms ease-out;

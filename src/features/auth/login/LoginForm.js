@@ -4,12 +4,16 @@ import { useSelector, useDispatch } from 'react-redux';
 import { CSSTransition } from 'react-transition-group';
 import { setToken } from '../authSlice';
 import { useLoginMutation } from '../authApiSlice';
-import { selectEmail, selectPassword, setEmail, setPassword, setError, getLoginError } from './loginSlice';
+import { selectEmail, selectPassword, setEmail, setPassword, setEmailError, setLoginError, getLoginError, resetEmail } from './loginSlice';
+import { EMAIL_REGEX } from '../../../utils/regex';
 
 export default function LoginForm() {
+  // refs for input components
+  const emailInputRef = React.useRef(null);
+  const passwordInputRef = React.useRef(null);
+
   // refs for CSSTransition components
   const emailRef = React.useRef(null);
-  const passwordRef = React.useRef(null);
 
   // ref for error message div (not available unless an error is present)
   const errorRef = React.useRef(null);
@@ -27,8 +31,8 @@ export default function LoginForm() {
 
   // set focus on email field when component mounts
   React.useEffect(() => {
-    emailRef.current.focus();
-  }, [emailRef]);
+    emailInputRef.current.focus();
+  }, [emailInputRef]);
 
   // set focus on error field if error is present
   React.useEffect(() => {
@@ -37,13 +41,25 @@ export default function LoginForm() {
     }
   }, [error]);
 
-  // reset errorMessage when email or password changes
+// validate email on change changed
   React.useEffect(() => {
-    dispatch(setError(''));
-  }, [email.value, password.value, dispatch]);
+      if (email.value) {
+        if (!EMAIL_REGEX.test(email.value)) {
+          dispatch(setEmailError('Invalid email format'));
+        } else {
+          dispatch(setEmailError(''));
+        }
+      } else {
+        dispatch(resetEmail());
+      }
+  }, [email.value, dispatch]);
 
   const canSubmit =
-    Boolean(email.value) && Boolean(password.value) && !isLoading;
+    Boolean(email.value) &&
+    Boolean(password.value) &&
+    !email.hasErrors &&
+    !password.hasErrors &&
+    !isLoading;
 
   const handleLogIn = async (e) => {
     e.preventDefault();
@@ -56,11 +72,11 @@ export default function LoginForm() {
       dispatch(setToken({ token: response.accessToken }));
       dispatch(setEmail(''));
       dispatch(setPassword(''));
-      dispatch(setError(''));
+      dispatch(setLoginError(''));
       navigate('/todoList');
     } catch (error) {
       console.error('in LoginForm. Error logging in user: ', error);
-      dispatch(setError( error.data?.message || 'An error occurred during login. Please try again.' ));
+      dispatch(setLoginError( error.data?.message || 'An error occurred during login. Please try again.' ));
     }
   };
 
@@ -83,7 +99,7 @@ export default function LoginForm() {
           >
             <label htmlFor='email'>Email</label>
             <input
-              ref={emailRef}
+              ref={emailInputRef}
               id='email'
               name='email'
               type='email'
@@ -101,11 +117,12 @@ export default function LoginForm() {
               unmountOnExit
             >
               <div ref={emailRef} className='error'>
-                {email.errorMessage}
+                ❌ {email.errorMessage}
               </div>
             </CSSTransition>
             <label htmlFor='password'>Password</label>
             <input
+              ref={passwordInputRef}
               id='password'
               name='password'
               type='password'
@@ -115,17 +132,6 @@ export default function LoginForm() {
               autoComplete='off'
               required
             />
-            <CSSTransition
-              nodeRef={passwordRef}
-              in={password.hasErrors}
-              timeout={330}
-              classNames='auth-form-input-error-message'
-              unmountOnExit
-            >
-              <div ref={passwordRef} className='error'>
-                {password.message}
-              </div>
-            </CSSTransition>
             <button type='submit' disabled={!canSubmit}>
               Log In
             </button>
