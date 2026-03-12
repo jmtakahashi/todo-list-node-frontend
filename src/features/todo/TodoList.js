@@ -6,7 +6,7 @@ export default function TodoList() {
   // the options we can pass to useFetchTodosQuery are made possible by adding
   // setupListeners(store.dispatch); in store.js
   const {
-    data: todos,
+    data,
     isLoading,
     isSuccess,
     isError,
@@ -28,21 +28,21 @@ export default function TodoList() {
 
       {isSuccess ? (
 
-        todos.length === 0 ? (
+        data.todos.length === 0 ? (
           <p>You have no todos yet. Add one above!</p>
         ) : (
           usingCreateEntityAdapter ? (
             <>
               {/* this map callback function is specific to RTK query w/ createEntityAdapter */}
-              {  todos.ids.map((id) => {
-                  const todo = todos.entities[id];
+              {  data.todos.ids.map((id) => {
+                  const todo = data.todos.entities[id];
                   return <Todo key={todo._id ?? todo.id} todo={todo} />;
                 })}
             </>
           ) : (
             <>
               {/* this map callback function is the standard way */}
-              {todos.map((todo) => <Todo key={todo._id} todo={todo} />)}
+              {data.todos.map((todo) => <Todo key={todo._id} todo={todo} />)}
             </>
           )
         )

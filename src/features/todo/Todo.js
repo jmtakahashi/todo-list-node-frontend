@@ -14,7 +14,7 @@ export default function Todo({ todo }) {
 
   const handleCheckboxClick = async () => {
     try {
-      const response = await updateTodo({ id: todo._id, updatedFields: { completed: !todo.completed } }).unwrap();
+      const response = await updateTodo({ id: todo._id, updatedFields: { completed: !todo.completed, task: todo.task } }).unwrap();
       console.log('in Todo. updateTodo checkbox response: ', response);
     } catch (error) {
       console.error('in Todo. Error updating done state for todo: ', error);
@@ -34,7 +34,7 @@ export default function Todo({ todo }) {
   const handleSaveEditedTodoClick = async () => {
     setEditing(false);
     try {
-      const response = await updateTodo({ id: todo._id, updatedFields: { task: task } }).unwrap();
+      const response = await updateTodo({ id: todo._id, updatedFields: { task: task, completed: todo.completed } }).unwrap();
       console.log('in Todo. updateTodo body response: ', response);
     } catch (error) {
       console.error('in Todo. Error saving edited todo: ', error);
