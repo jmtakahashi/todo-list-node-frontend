@@ -21,9 +21,14 @@ export default function Header() {
 
   return (
     <header className='header'>
-      <Link to='/'>
-        <h1>Todo List</h1>
-      </Link>
+      {location.pathname === '/todo-list' ? (
+        <h1 className='todo-list__title--no-link'>Todo List</h1>
+      ) : (
+        <Link to='/'>
+          <h1>Todo List</h1>
+        </Link>
+      )}
+
       <div className='todo-list__auth-buttons-container'>
         {token ? (
           <button className='todo-list__auth-button' onClick={handleLogOut}>

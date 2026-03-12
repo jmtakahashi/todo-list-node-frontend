@@ -53,6 +53,10 @@ header {
   align-items: center;
 }
 
+.todo-list__title--no-link {
+  text-decoration: none;
+}
+
 .welcome {
   text-align: center;
   padding: 2rem;

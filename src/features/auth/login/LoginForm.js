@@ -73,7 +73,7 @@ export default function LoginForm() {
       dispatch(setEmail(''));
       dispatch(setPassword(''));
       dispatch(setLoginError(''));
-      navigate('/todoList');
+      navigate('/todo-list');
     } catch (error) {
       console.error('in LoginForm. Error logging in user: ', error);
       dispatch(setLoginError( error.data?.message || 'An error occurred during login. Please try again.' ));

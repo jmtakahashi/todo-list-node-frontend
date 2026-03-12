@@ -22,7 +22,7 @@ function App() {
             <Route path='/' element={ <Home /> }/>
             <Route path='/register' element={ <RegisterForm /> }/>
             <Route path='/login' element={ <LoginForm/> }/>
-            <Route path='/todoList' element={token ? <Prefetch><TodoList /></Prefetch> : <Navigate to='/login' /> }/>
+            <Route path='/todo-list' element={token ? <Prefetch><TodoList /></Prefetch> : <Navigate to='/login' /> }/>
           </Routes>
         </main>
         <Footer />

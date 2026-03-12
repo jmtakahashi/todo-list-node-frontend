@@ -161,7 +161,7 @@ export default function RegisterForm() {
       dispatch(setEmail(''));
       dispatch(setPassword(''));
       dispatch(setRegisterError(''));
-      navigate('/todoList');
+      navigate('/todo-list');
     } catch (error) {
       console.error('in RegisterForm. Error registering user: ', error);
       dispatch(
