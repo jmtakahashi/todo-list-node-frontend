@@ -1,4 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
+import {
+  EMAIL_REGEX,
+} from '../../../utils/regex';
 
 const initialState = {
   email: {
@@ -8,8 +11,6 @@ const initialState = {
   },
   password: {
     value: '',
-    hasErrors: false,
-    errorMessage: '',
   },
   status: 'idle', // 'idle' | 'loading' | 'succeeded' | 'failed'
   error: null,
@@ -21,34 +22,33 @@ export const loginSlice = createSlice({
   reducers: {
     setEmail: (state, action) => {
       state.email.value = action.payload;
-      state.email.hasErrors = false;
-      state.email.errorMessage = '';
-    },
-    setPassword: (state, action) => {
-      state.password.value = action.payload;
-      state.password.hasErrors = false;
-      state.password.errorMessage = '';
-    },
-    setEmailError: (state, action) => {
+
       if (action.payload === '') {
         state.email.hasErrors = false;
         state.email.errorMessage = '';
       } else {
-        state.email.hasErrors = true;
-        state.email.errorMessage = action.payload;
-      }
+        if (!EMAIL_REGEX.test(action.payload)) {
+          state.email.hasErrors = true;
+          state.email.errorMessage = 'Invalid email format';
+        } else {
+          state.email.hasErrors = false;
+          state.email.errorMessage = '';
+        }
+      }      
     },
-    setLoginError: (state, action) => {
-      state.error = action.payload;
+    setPassword: (state, action) => {
+      state.password.value = action.payload;
     },
     setStatus: (state, action) => {
       state.status = action.payload;
     },
-    resetEmail: (state) => {
-      state.email.value = '';
-      state.email.hasErrors = false;
-      state.email.errorMessage = '';
+    setLoginError: (state, action) => {
+      state.error = action.payload;
     },
+    resetState: (state) => {
+      state = initialState;
+    },
+
   },
 });
 
@@ -57,6 +57,6 @@ export const selectPassword = (state) => state.login.password;
 export const getLoginStatus = (state) => state.login.status;
 export const getLoginError = (state) => state.login.error;
 
-export const { setEmail, setPassword, setEmailError, setLoginError, setStatus, resetEmail } = loginSlice.actions;
+export const { setEmail, setPassword, setLoginError, setStatus, resetState } = loginSlice.actions;
 
 export default loginSlice.reducer;

@@ -1,4 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
+import {
+  USERNAME_REGEX,
+  EMAIL_REGEX,
+  PASSWORD_REGEX,
+} from '../../../utils/regex';
 
 const initialState = {
   email: {
@@ -6,6 +11,7 @@ const initialState = {
     hasErrors: false,
     errorMessage: '',
     isUnique: false,
+    isValidEmail: false,
   },
   username: {
     value: '',
@@ -25,19 +31,63 @@ export const registerSlice = createSlice({
   name: 'register',
   initialState,
   reducers: {
-    setEmail: (state, action) => { 
+    setEmail: (state, action) => {
       state.email.value = action.payload;
-    },
-    setEmailIsUnique: (state, action) => {
-      state.email.hasErrors = !action.payload.isUnique;
-      state.email.errorMessage =  action.payload.message;
-      state.email.isUnique = action.payload.isUnique;
+
+      if (action.payload === '') {
+        state.email.hasErrors = false;
+        state.email.errorMessage = '';
+      } else {
+        if (!EMAIL_REGEX.test(action.payload)) {
+          state.email.hasErrors = true;
+          state.email.errorMessage = 'Invalid email format';
+        } else {
+          state.email.hasErrors = false;
+          state.email.errorMessage = '';
+        }
+      }
     },
     setUsername: (state, action) => {
       state.username.value = action.payload;
+
+      if (action.payload === '') {
+        state.username.hasErrors = false;
+        state.username.errorMessage = '';
+      } else {
+        if (!USERNAME_REGEX.test(action.payload)) {
+          state.username.hasErrors = true;
+          state.username.errorMessage = 'Invalid username format';
+        } else {
+          state.username.hasErrors = false;
+          state.username.errorMessage = '';
+        }
+      }
     },
     setPassword: (state, action) => {
       state.password.value = action.payload;
+
+      if (action.payload === '') {
+        state.password.hasErrors = false;
+        state.password.errorMessage = '';
+      } else {
+        if (!PASSWORD_REGEX.test(action.payload)) {
+          state.password.hasErrors = true;
+          state.password.errorMessage = 'Invalid password format';
+        } else {
+          state.password.hasErrors = false;
+          state.password.errorMessage = '';
+        }
+      }
+    },
+    setEmailIsUnique: (state) => {
+      state.email.hasErrors = false;
+      state.email.errorMessage = '';
+      state.email.isUnique = true;
+    },
+    setEmailIsNotUnique: (state) => {
+      state.email.hasErrors = true;
+      state.email.errorMessage = 'Email is already in use';
+      state.email.isUnique = false;
     },
     setEmailError: (state, action) => {
       if (action.payload === '') {
@@ -48,47 +98,16 @@ export const registerSlice = createSlice({
         state.email.errorMessage = action.payload;
       }
     },
-    setUsernameError: (state, action) => {
-      if (action.payload === '') {
-        state.username.hasErrors = false;
-        state.username.errorMessage = '';
-      } else {
-        state.username.hasErrors = true;
-        state.username.errorMessage = action.payload;
-      }
-    },
-    setPasswordError: (state, action) => {
-      if (action.payload === '') {
-        state.password.hasErrors = false;
-        state.password.errorMessage = '';
-      } else {
-        state.password.hasErrors = true;
-        state.password.errorMessage = action.payload;
-      }
-    },
     setStatus: (state, action) => {
       state.status = action.payload;
     },
     setRegisterError: (state, action) => {
       state.error = action.payload;
     },
-    resetEmail: (state) => {
-      state.email.value = '';
-      state.email.hasErrors = false;
-      state.email.errorMessage = '';
-      state.email.isUnique = false;
+    resetState: (state) => {
+      state = initialState;
     },
-    resetUsername: (state) => {
-      state.username.value = '';
-      state.username.hasErrors = false;
-      state.username.errorMessage = '';
-    },
-    resetPassword: (state) => {
-      state.password.value = '';
-      state.password.hasErrors = false;
-      state.password.errorMessage = '';
-    }
-  }
+  },
 });
 
 export const selectEmail = (state) => state.register.email;
@@ -97,6 +116,16 @@ export const selectPassword = (state) => state.register.password;
 export const getRegisterStatus = (state) => state.register.status;
 export const getRegisterError = (state) => state.register.error;
 
-export const { setEmail, setEmailIsUnique, setUsername, setPassword, setEmailError, setUsernameError, setPasswordError, setRegisterError, setStatus, resetEmail, resetUsername, resetPassword } = registerSlice.actions;
+export const {
+  setEmail,
+  setUsername,
+  setPassword,
+  setEmailIsUnique,
+  setEmailIsNotUnique,
+  setEmailError,
+  setStatus,
+  setRegisterError,
+  resetState,
+} = registerSlice.actions;
 
 export default registerSlice.reducer;

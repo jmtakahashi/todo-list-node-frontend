@@ -4,8 +4,15 @@ import { useSelector, useDispatch } from 'react-redux';
 import { CSSTransition } from 'react-transition-group';
 import { setToken } from '../authSlice';
 import { useLoginMutation } from '../authApiSlice';
-import { selectEmail, selectPassword, setEmail, setPassword, setEmailError, setLoginError, getLoginError, resetEmail } from './loginSlice';
-import { EMAIL_REGEX } from '../../../utils/regex';
+import {
+  selectEmail,
+  selectPassword,
+  getLoginError,
+  setEmail,
+  setPassword,
+  setLoginError,
+  resetState,
+} from './loginSlice';
 
 export default function LoginForm() {
   // refs for input components
@@ -13,7 +20,7 @@ export default function LoginForm() {
   const passwordInputRef = React.useRef(null);
 
   // refs for CSSTransition components
-  const emailRef = React.useRef(null);
+  const emailErrorRef = React.useRef(null);
 
   // ref for error message div (not available unless an error is present)
   const errorRef = React.useRef(null);
@@ -41,24 +48,10 @@ export default function LoginForm() {
     }
   }, [error]);
 
-// validate email on change changed
-  React.useEffect(() => {
-      if (email.value) {
-        if (!EMAIL_REGEX.test(email.value)) {
-          dispatch(setEmailError('Invalid email format'));
-        } else {
-          dispatch(setEmailError(''));
-        }
-      } else {
-        dispatch(resetEmail());
-      }
-  }, [email.value, dispatch]);
-
   const canSubmit =
     Boolean(email.value) &&
     Boolean(password.value) &&
     !email.hasErrors &&
-    !password.hasErrors &&
     !isLoading;
 
   const handleLogIn = async (e) => {
@@ -70,9 +63,7 @@ export default function LoginForm() {
       }).unwrap();
       // console.log('in LoginForm. response: ', response);
       dispatch(setToken({ token: response.accessToken }));
-      dispatch(setEmail(''));
-      dispatch(setPassword(''));
-      dispatch(setLoginError(''));
+      dispatch(resetState());
       navigate('/todo-list');
     } catch (error) {
       console.error('in LoginForm. Error logging in user: ', error);
@@ -110,14 +101,14 @@ export default function LoginForm() {
               required
             />
             <CSSTransition
-              nodeRef={emailRef}
+              nodeRef={emailErrorRef}
               in={email.hasErrors}
               timeout={330}
               classNames='auth-form-input-error-message'
               unmountOnExit
             >
-              <div ref={emailRef} className='error'>
-                ❌ {email.errorMessage}
+              <div ref={emailErrorRef} className='error'>
+                ❌ Invalid email format
               </div>
             </CSSTransition>
             <label htmlFor='password'>Password</label>

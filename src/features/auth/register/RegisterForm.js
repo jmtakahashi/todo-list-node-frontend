@@ -13,18 +13,14 @@ import {
   selectPassword,
   getRegisterError,
   setEmail,
-  setEmailIsUnique,
   setUsername,
   setPassword,
+  setEmailIsUnique,
+  setEmailIsNotUnique,
   setEmailError,
-  setUsernameError,
-  setPasswordError,
   setRegisterError,
-  resetEmail,
-  resetUsername,
-  resetPassword,
+  resetState
 } from './registerSlice';
-import { USERNAME_REGEX, EMAIL_REGEX, PASSWORD_REGEX } from '../../../utils/regex';
 
 export default function RegisterForm() {
   // refs for input components
@@ -42,7 +38,7 @@ export default function RegisterForm() {
   // ref for error message div (not available unless an error is present)
   const errorRef = React.useRef(null);
 
-  // email, username and password are objects containing value, hasErrorss, and errorMessage properties
+  // email, username and password are objects containing value, hasErrors, and errorMessage properties
   const email = useSelector(selectEmail);
   const username = useSelector(selectUsername);
   const password = useSelector(selectPassword);
@@ -67,74 +63,27 @@ export default function RegisterForm() {
     }
   }, [error]);
 
-  // validate email, username and password when they change
+  // check for existing user when email becomes valid
   React.useEffect(() => {
-    if (email.value) {
-      if (!EMAIL_REGEX.test(email.value)) {
-        dispatch(setEmailError('Invalid email format'));
-      } else {
-        dispatch(setEmailError(''));
-      }
-    } else {
-      dispatch(resetEmail());
-    }
-
-    if (username.value) {
-      if (!USERNAME_REGEX.test(username.value)) {
-        dispatch(setUsernameError('Invalid username format'));
-      } else {
-        dispatch(setUsernameError(''));
-      }
-    } else {
-      dispatch(resetUsername());
-    }
-
-    if (password.value) {
-      if (!PASSWORD_REGEX.test(password.value)) {
-        dispatch(setPasswordError('Invalid password format'));
-      } else {
-        dispatch(setPasswordError(''));
-      }
-    } else {
-      dispatch(resetPassword());
-    }
-  }, [email.value, username.value, password.value, dispatch]);
-
-  // check for email uniqueness when email changes and is in valid format
-  React.useEffect(() => {
-    if (email.value && !email.hasErrors) {
+    if (Boolean(email.value) && !email.hasErrors) {
+      console.log('checking email for uniqueness')
       const checkEmailForUniqueness = async () => {
         try {
           const response = await checkExistingUser(email.value);
+          
           const emailExists = response.data; // response.data is expected to be true if email exists, false if it doesn't
+          
           if (emailExists) {
-            dispatch(
-              setEmailIsUnique({
-                isUnique: false,
-                message: 'Email is already in use',
-              }),
-            );
+            dispatch(setEmailIsNotUnique());
           } else {
-            dispatch(
-              setEmailIsUnique({
-                isUnique: true,
-                message: '',
-              }),
-            );
+            dispatch(setEmailIsUnique());
           }
         } catch (error) {
-          console.error(
-            'in RegisterForm. Error checking existing user: ',
-            error,
-          );
-          dispatch(
-            setEmailError(
-              error.data?.message ||
-                'Failed to check for existing email. Please try again.',
-            ),
-          );
+          console.error('in RegisterForm. Error checking existing user: ', error);
+          dispatch(setEmailError(error.data?.message || 'Failed to check for existing email. Please try again.'));
         }
       }
+
       checkEmailForUniqueness()
     }
   }, [email.value, email.hasErrors, checkExistingUser, dispatch]);
@@ -158,9 +107,7 @@ export default function RegisterForm() {
       }).unwrap();
       // console.log('in RegisterForm. response: ', response);
       dispatch(setToken({ token: response.accessToken }));
-      dispatch(setEmail(''));
-      dispatch(setPassword(''));
-      dispatch(setRegisterError(''));
+      dispatch(resetState());
       navigate('/todo-list');
     } catch (error) {
       console.error('in RegisterForm. Error registering user: ', error);
