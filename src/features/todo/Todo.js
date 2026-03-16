@@ -14,8 +14,7 @@ export default function Todo({ todo }) {
 
   const handleCheckboxClick = async () => {
     try {
-      const response = await updateTodo({ id: todo._id, updatedFields: { completed: !todo.completed, task: todo.task } }).unwrap();
-      console.log('in Todo. updateTodo checkbox response: ', response);
+      await updateTodo({ id: todo._id, updatedFields: { completed: !todo.completed, task: todo.task } }).unwrap();
     } catch (error) {
       console.error('in Todo. Error updating done state for todo: ', error);
       dispatch(setGlobalError(error.data?.message || 'Error updating todo'))
@@ -34,8 +33,7 @@ export default function Todo({ todo }) {
   const handleSaveEditedTodoClick = async () => {
     setEditing(false);
     try {
-      const response = await updateTodo({ id: todo._id, updatedFields: { task: task, completed: todo.completed } }).unwrap();
-      console.log('in Todo. updateTodo body response: ', response);
+      await updateTodo({ id: todo._id, updatedFields: { task: task, completed: todo.completed } }).unwrap();
     } catch (error) {
       console.error('in Todo. Error saving edited todo: ', error);
       dispatch(setGlobalError(error.data?.message || 'Error updating todo'))
@@ -50,8 +48,7 @@ export default function Todo({ todo }) {
 
   const handleDeleteTodoClick = async () => {
     try {
-      const response = await deleteTodo(todo._id).unwrap();
-      console.log('in Todo. deleteTodo response: ', response);
+      await deleteTodo(todo._id).unwrap();
     } catch (error) {
       console.error('in Todo. Error deleting todo: ', error);
       dispatch(setGlobalError(error.data?.message || 'Error deleting todo'))

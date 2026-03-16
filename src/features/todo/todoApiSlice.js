@@ -21,8 +21,8 @@ export const todoApiSlice = apiSlice.injectEndpoints({
       query: () => ({
         url: '/todos',
         validateStatus: (response, result) => {
-          console.log('in fetchTodos.validateStatus response: ', response);
-          console.log('in fetchTodos.validateStatus result: ', result);
+          console.log('in todoApiSlice.fetchTodos.validateStatus response: ', response);
+          console.log('in todoApiSlice.fetchTodos.validateStatus result: ', result);
           // RTK Query considers a response valid if the status code is 200-299 
           // and the result does not have an error property
           if (response.status === 200 && !result.error) {

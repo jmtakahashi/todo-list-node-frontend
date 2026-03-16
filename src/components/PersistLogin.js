@@ -19,7 +19,7 @@ export default function PersistLogin() {
 
   React.useEffect(() => {
     console.log('running persistLogin getLocalStorage useEffect');
-    
+
     localStorage.getItem('persist') === 'true'
       ? dispatch(setPersist(true))
       : dispatch(setPersist(false));
@@ -28,12 +28,13 @@ export default function PersistLogin() {
   }, [dispatch]);
 
   React.useEffect(() => {
-    let isMounted = true;
-
     console.log('running persistLogin verifyRefreshToken useEffect');
+
+    let isMounted = true;
     
     const verifyRefreshToken = async () => { 
       console.log('running verifyRefreshToken');
+      
       try {
         const response = await refresh().unwrap();
         console.log('response from verifyRefreshToken: ', response);

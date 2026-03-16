@@ -66,7 +66,6 @@ export default function RegisterForm() {
   // check for existing user when email becomes valid
   React.useEffect(() => {
     if (Boolean(email.value) && !email.hasErrors) {
-      console.log('checking email for uniqueness')
       const checkEmailForUniqueness = async () => {
         try {
           const response = await checkExistingUser(email.value);
@@ -105,7 +104,6 @@ export default function RegisterForm() {
         username: username.value,
         password: password.value,
       }).unwrap();
-      // console.log('in RegisterForm. response: ', response);
       dispatch(setToken(response.accessToken));
       dispatch(resetState());
       navigate('/todo-list');

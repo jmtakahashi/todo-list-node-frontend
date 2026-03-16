@@ -25,22 +25,15 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
 
   // result is the response from the server at the endpoint specied in our slices
   // (ex: authApiSlice -> /auth/login, todoSlice -> /todo,  etc).
-  console.log('in apiSlice. result: ', result);
 
   // 2a. if we get a 403 error there was an issue with the access token
   // if (result.error && result.error.originalStatus === 403 ) {
   if (result.error && result.error.status === 403) {
-    console.log('in apiSlice.baseQueryWithReauth.  sending refresh token...');
 
     // 3. send refresh token to the server get a new access token
     const refreshResult = await baseQuery('/auth/refresh', api, extraOptions);
 
-    console.log(
-      'in apiSlice.baseQueryWithReauth. refreshResult: ',
-      refreshResult,
-    );
-
-    // response will contain a data property containing the new access token or an error property
+    // response will contain a data property containing the new access token or an error property (refreshResult.data || refreshResult.error)
     // 4a. if server responds with a new access token, store the token in state and retry the original query
     if (refreshResult.data) {
       const newToken = refreshResult.data.accessToken;
@@ -53,10 +46,6 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
     } else {
       // 4b-1. if server responds with 403, set a message on the returned result
       if (refreshResult?.error?.status === 403) {
-        console.log(
-          'in apiSlice.baseQueryWithReauth. refresh token request failed with 403. clearing token and logging out user',
-        );
-
         // attach an error message to the result that will be returned to the component that initiated the original query
         refreshResult.error.data.message =
           'Your session has expired. Please log in again. ';
@@ -72,7 +61,6 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
   }
 
   // 2b. if you get a non-403 error, or if the original query succeeds, just return the result
-  console.log('in apiSlice. returning result...');
   return result;
 };
 

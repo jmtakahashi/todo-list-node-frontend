@@ -12,7 +12,7 @@ export default function TodoComposer() {
 
   const dispatch = useDispatch();
 
-  // local state for new todo label
+  // local state for new todo
   const [task, setTask] = React.useState('');
 
   // focus the input field when the component mounts
@@ -28,8 +28,7 @@ export default function TodoComposer() {
       try {
         // using the mutations returned from our slice, we don't need to manually set state or dispatch actions, 
         // RTK Query will handle that for us and give us the result of the mutation (or any error) in the returned object
-        const response = await addTodo({ task: task }).unwrap();
-        console.log('in TodoComposer. response: ', response);
+        await addTodo({ task: task }).unwrap();
         setTask(''); // clear the input field after successful submission
       } catch (error) {
         console.error('in TodoComposer. Error adding todo: ', error);

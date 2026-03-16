@@ -64,8 +64,12 @@ export default function LoginForm() {
 
   const togglePersist = () => {
     dispatch(setPersist(!persist));
-    localStorage.setItem('persist', !persist);
   }
+
+  // set the persist value in localStorage whenever it changes in the Redux state
+  React.useEffect(() => {
+    localStorage.setItem('persist', persist);
+  }, [persist]);
   
   const handleLogIn = async (e) => {
     e.preventDefault();
@@ -74,7 +78,6 @@ export default function LoginForm() {
         email: email.value,
         password: password.value,
       }).unwrap();
-      // console.log('in LoginForm. response: ', response);
       dispatch(setToken(response.accessToken));
       dispatch(resetState());
       navigate('/todo-list');

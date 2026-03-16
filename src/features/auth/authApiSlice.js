@@ -33,8 +33,8 @@ export const authApiSlice = apiSlice.injectEndpoints({
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
-          // data is expected to be { message: 'Logged out successfully' }, the response from server
-          console.log('in authApiSlice logout onQueryStarted. data: ', data);
+          // data is expected to be the response from server { message: 'Logged out successfully' }
+          console.log('in authApiSlice.logout onQueryStarted. data: ', data);
           dispatch(clearToken());
           // clear out cached data, subscriptions and anything to do with our api
           dispatch(apiSlice.util.resetApiState());
