@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route, Navigate } from 'react-router';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router';
 import TodoList from '../features/todo/TodoList';
 import Header from './Header';
 import Home from './Home';
@@ -12,6 +12,7 @@ import PersistLogin from './PersistLogin';
 
 function App() {
   return (
+    <BrowserRouter>
       <div className='container'>
         <Header />
         <main>
@@ -35,6 +36,7 @@ function App() {
         </main>
         <Footer />
       </div>
+    </BrowserRouter>
   );
 }
 
