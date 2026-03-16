@@ -177,13 +177,15 @@ form.todo-list__composer button {
 }
 
 li.todo-list__todo > label,
-li.todo-list__todo > .todo-list__todo-buttons-container {
+li.todo-list__todo > .todo-list__todo-buttons-container,
+.todo-list__persist-checkbox-container > label {
   display: flex;
   align-items: center;
   cursor: pointer;
 }
 
-li.todo-list__todo > label {   
+li.todo-list__todo > label,
+.todo-list__persist-checkbox-container > label {
   gap: .5rem;
 }
 
@@ -191,18 +193,21 @@ li.todo-list__todo > .todo-list__todo-buttons-container {
   gap: 1rem;
 }
 
-.todo-list__todo-checkbox-container {
+.todo-list__todo-checkbox-container,
+.todo-list__persist-checkbox-container {
   position: relative;
 }
 
 /* hide the default checkbox */
-li.todo-list__todo input[type="checkbox"] {
+li.todo-list__todo input[type="checkbox"],
+.todo-list__persist-checkbox-container input[type="checkbox"] {
   visibility: hidden;
   position: absolute;
 }
 
 /* custom checkbox */
-.todo-list__todo-checkbox {
+.todo-list__todo-checkbox,
+.todo-list__persist-checkbox {
   display: block;
   width: 24px;
   height: 24px;
@@ -211,7 +216,8 @@ li.todo-list__todo input[type="checkbox"] {
 }
 
 /* checkmark */
-.todo-list__todo-checkbox::after {
+.todo-list__todo-checkbox::after,
+.todo-list__persist-checkbox::after {
   content: "";
   position: absolute;
   left: 5px;
@@ -225,16 +231,17 @@ li.todo-list__todo input[type="checkbox"] {
   opacity: 0; /* hide the checkmark by default */
 }
 
-li.todo-list__todo input[type="checkbox"]:checked + .todo-list__todo-checkbox {
+li.todo-list__todo input[type="checkbox"]:checked + .todo-list__todo-checkbox,
+.todo-list__persist-checkbox-container input[type="checkbox"]:checked + .todo-list__persist-checkbox {
   background-color: var(--accent-color);
   border-color: var(--accent-color);
 }
 
 /* show the checkmark when the default checkbox is checked */
-li.todo-list__todo input[type="checkbox"]:checked + .todo-list__todo-checkbox::after {
+li.todo-list__todo input[type="checkbox"]:checked + .todo-list__todo-checkbox::after,
+.todo-list__persist-checkbox-container input[type="checkbox"]:checked + .todo-list__persist-checkbox::after {
   opacity: 1;
 }
-
 
 li.todo-list__todo > label:has(input[type="checkbox"]:checked) > .todo-list__todo-task {
   text-decoration: line-through;
@@ -299,10 +306,12 @@ footer {
 }
 
 .auth-form-input__valid {
-  display: block;
+  display: flex;
+  align-items: center;
   position: absolute;
-  top: 1rem;
+  top: 0;
   right: 1rem;
+  height: 100%;
   line-height: normal;
 }
 

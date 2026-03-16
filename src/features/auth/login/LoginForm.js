@@ -117,18 +117,20 @@ export default function LoginForm() {
                 autoComplete='email'
                 required
               />
-              <CSSTransition
-                nodeRef={emailErrorRef}
-                in={email.hasErrors}
-                timeout={330}
-                classNames='auth-form-input-error-message'
-                unmountOnExit
-              >
-                <div ref={emailErrorRef} className='error'>
-                  ❌ Invalid email format
-                </div>
-              </CSSTransition>
             </div>
+              
+            <CSSTransition
+              nodeRef={emailErrorRef}
+              in={email.hasErrors}
+              timeout={330}
+              classNames='auth-form-input-error-message'
+              unmountOnExit
+            >
+              <div ref={emailErrorRef} className='error'>
+                ❌ Invalid email format
+              </div>
+            </CSSTransition>
+              
             <div className='auth-form-input-wrapper'>
               <label htmlFor='password'>Password</label>
               <input
@@ -143,16 +145,21 @@ export default function LoginForm() {
                 required
               />
             </div>
+              
             <div className='todo-list__persist-checkbox-container'>
-              <input
-                type='checkbox'
-                id='persist'
-                name='persist'
-                onChange={togglePersist}
-                checked={persist}
-              />
-              <label htmlFor='persist'>Trust This Device</label>
+              <label htmlFor='persist'>
+                <input
+                  type='checkbox'
+                  id='persist'
+                  name='persist'
+                  onChange={togglePersist}
+                  checked={persist}
+                />
+                <div className='todo-list__persist-checkbox'></div>
+                Trust This Device
+              </label>
             </div>
+              
             <button type='submit' disabled={!canSubmit}>
               Log In
             </button>
