@@ -106,7 +106,7 @@ export default function RegisterForm() {
         password: password.value,
       }).unwrap();
       // console.log('in RegisterForm. response: ', response);
-      dispatch(setToken({ token: response.accessToken }));
+      dispatch(setToken(response.accessToken));
       dispatch(resetState());
       navigate('/todo-list');
     } catch (error) {
@@ -192,7 +192,7 @@ export default function RegisterForm() {
                 ref={usernameInputRef}
                 id='username'
                 name='username'
-                type='username'
+                type='text'
                 placeholder='Username'
                 onChange={(e) => dispatch(setUsername(e.target.value))}
                 value={username.value}

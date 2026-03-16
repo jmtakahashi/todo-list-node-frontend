@@ -2,7 +2,7 @@ import React from 'react'
 import { useNavigate } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 import { CSSTransition } from 'react-transition-group';
-import { setToken } from '../authSlice';
+import { setToken, setPersist, getAuthPersist } from '../authSlice';
 import { useLoginMutation } from '../authApiSlice';
 import {
   selectEmail,
@@ -29,6 +29,7 @@ export default function LoginForm() {
   const email = useSelector(selectEmail);
   const password = useSelector(selectPassword);
   const error = useSelector(getLoginError);
+  const persist = useSelector(getAuthPersist);
 
   const dispatch = useDispatch();
 
@@ -54,6 +55,18 @@ export default function LoginForm() {
     !email.hasErrors &&
     !isLoading;
 
+  // get the persist value from localStorage and set it in the Redux state on component mount
+  React.useEffect(() => {
+    localStorage.getItem('persist') === 'true'
+      ? dispatch(setPersist(true))
+      : dispatch(setPersist(false));
+  }, [dispatch]);
+
+  const togglePersist = () => {
+    dispatch(setPersist(!persist));
+    localStorage.setItem('persist', !persist);
+  }
+  
   const handleLogIn = async (e) => {
     e.preventDefault();
     try {
@@ -62,7 +75,7 @@ export default function LoginForm() {
         password: password.value,
       }).unwrap();
       // console.log('in LoginForm. response: ', response);
-      dispatch(setToken({ token: response.accessToken }));
+      dispatch(setToken(response.accessToken));
       dispatch(resetState());
       navigate('/todo-list');
     } catch (error) {
@@ -88,41 +101,55 @@ export default function LoginForm() {
             onSubmit={handleLogIn}
             className='todo-list__auth-form'
           >
-            <label htmlFor='email'>Email</label>
-            <input
-              ref={emailInputRef}
-              id='email'
-              name='email'
-              type='email'
-              placeholder='Email'
-              onChange={(e) => dispatch(setEmail(e.target.value))}
-              value={email.value}
-              autoComplete='email'
-              required
-            />
-            <CSSTransition
-              nodeRef={emailErrorRef}
-              in={email.hasErrors}
-              timeout={330}
-              classNames='auth-form-input-error-message'
-              unmountOnExit
-            >
-              <div ref={emailErrorRef} className='error'>
-                ❌ Invalid email format
-              </div>
-            </CSSTransition>
-            <label htmlFor='password'>Password</label>
-            <input
-              ref={passwordInputRef}
-              id='password'
-              name='password'
-              type='password'
-              placeholder='Password'
-              onChange={(e) => dispatch(setPassword(e.target.value))}
-              value={password.value}
-              autoComplete='off'
-              required
-            />
+            <div className='auth-form-input-wrapper'>
+              <label htmlFor='email'>Email</label>
+              <input
+                ref={emailInputRef}
+                id='email'
+                name='email'
+                type='email'
+                placeholder='Email'
+                onChange={(e) => dispatch(setEmail(e.target.value))}
+                value={email.value}
+                autoComplete='email'
+                required
+              />
+              <CSSTransition
+                nodeRef={emailErrorRef}
+                in={email.hasErrors}
+                timeout={330}
+                classNames='auth-form-input-error-message'
+                unmountOnExit
+              >
+                <div ref={emailErrorRef} className='error'>
+                  ❌ Invalid email format
+                </div>
+              </CSSTransition>
+            </div>
+            <div className='auth-form-input-wrapper'>
+              <label htmlFor='password'>Password</label>
+              <input
+                ref={passwordInputRef}
+                id='password'
+                name='password'
+                type='password'
+                placeholder='Password'
+                onChange={(e) => dispatch(setPassword(e.target.value))}
+                value={password.value}
+                autoComplete='off'
+                required
+              />
+            </div>
+            <div className='todo-list__persist-checkbox-container'>
+              <input
+                type='checkbox'
+                id='persist'
+                name='persist'
+                onChange={togglePersist}
+                checked={persist}
+              />
+              <label htmlFor='persist'>Trust This Device</label>
+            </div>
             <button type='submit' disabled={!canSubmit}>
               Log In
             </button>

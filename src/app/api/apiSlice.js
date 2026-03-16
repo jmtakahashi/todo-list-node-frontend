@@ -45,7 +45,7 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
     if (refreshResult.data) {
       const newToken = refreshResult.data.accessToken;
 
-      api.dispatch(setToken({ token: newToken }));
+      api.dispatch(setToken(newToken));
 
       result = await baseQuery(args, api, extraOptions);
 

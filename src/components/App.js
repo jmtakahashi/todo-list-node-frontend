@@ -7,23 +7,31 @@ import LoginForm from '../features/auth/login/LoginForm';
 import RegisterForm from '../features/auth/register/RegisterForm';
 import Footer from './Footer';
 import Prefetch from '../features/auth/Prefetch';
-import { useSelector } from 'react-redux';
-import { getToken } from '../features/auth/authSlice';
+import RequireAuth from './RequireAuth';
+import PersistLogin from './PersistLogin';
 
 function App() {
-  const token = useSelector(getToken);
-
   return (
     <BrowserRouter>
       <div className='container'>
         <Header />
         <main>
           <Routes>
-            <Route path='/' element={ <Home /> }/>
-            <Route path='/register' element={ <RegisterForm /> }/>
-            <Route path='/login' element={ <LoginForm/> }/>
-            <Route path='/todo-list' element={token ? <Prefetch><TodoList /></Prefetch> : <Navigate to='/login' />} />
-            <Route path='*' element={ <Navigate to='/' /> }/>
+            {/* public routes */}
+            <Route path='/' element={<Home />} />
+            <Route path='/register' element={<RegisterForm />} />
+            <Route path='/login' element={<LoginForm />} />
+
+            {/* protected routes */}
+            <Route element={<PersistLogin />}>
+              <Route element={<RequireAuth />}>
+                <Route element={<Prefetch />}>
+                  <Route path='/todo-list' element={<TodoList />} />      
+                </Route>
+              </Route>
+            </Route>
+            
+            <Route path='*' element={<Navigate to='/' />} />
           </Routes>
         </main>
         <Footer />

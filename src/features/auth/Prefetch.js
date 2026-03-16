@@ -1,8 +1,9 @@
 import React from 'react';
+import { Outlet } from 'react-router';
 import { store } from '../../app/store';
 import { todoApiSlice } from '../todo/todoApiSlice';
 
-const Prefetch = ({ children }) => {
+const Prefetch = () => {
   React.useEffect(() => {
     store.dispatch(todoApiSlice.util.prefetch('fetchTodos', { force: true })); // force: true will ignore any cache and refetch data every time we mount this component
     // todos is a promise that resolves to the query result object 
@@ -12,6 +13,6 @@ const Prefetch = ({ children }) => {
 
   }, []);
 
-  return children;
+  return <Outlet />;
 };
 export default Prefetch;

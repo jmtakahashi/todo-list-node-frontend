@@ -45,8 +45,8 @@ export const loginSlice = createSlice({
     setLoginError: (state, action) => {
       state.error = action.payload;
     },
-    resetState: (state) => {
-      state = initialState;
+    resetState: () => {
+      return initialState;
     },
 
   },

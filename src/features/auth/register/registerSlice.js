@@ -104,8 +104,8 @@ export const registerSlice = createSlice({
     setRegisterError: (state, action) => {
       state.error = action.payload;
     },
-    resetState: (state) => {
-      state = initialState;
+    resetState: () => {
+      return initialState;
     },
   },
 });

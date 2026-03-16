@@ -32,7 +32,7 @@ a {
   color: inherit;
 }
 
-input {
+input[type="text"], input[type="password"], input[type="email"] {
   width: 100%;
 }
 
@@ -90,7 +90,7 @@ form.todo-list__auth-form {
   margin-bottom: 2rem;
 }
 
-form.todo-list__auth-form label {
+form.todo-list__auth-form > .auth-form-input-wrapper > label {
   display: none;
 }
 
@@ -107,6 +107,13 @@ form.todo-list__auth-form button {
 form.todo-list__auth-form input:focus {
   outline: none;
   border: 1px solid var(--accent-color);
+}
+
+.todo-list__persist-checkbox-container {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: .5rem;
 }
 
 form.todo-list__auth-form button {

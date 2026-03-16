@@ -7,7 +7,7 @@ import { getToken, setAuthError } from '../features/auth/authSlice';
 export default function Header() {
   const [logout] = useLogoutMutation();
   const location = useLocation();
-  const token = useSelector(getToken);
+  const accessToken = useSelector(getToken);
   const dispatch = useDispatch();
 
   const handleLogOut = async () => {
@@ -30,7 +30,7 @@ export default function Header() {
       )}
 
       <div className='todo-list__auth-buttons-container'>
-        {token ? (
+        {accessToken ? (
           <button className='todo-list__auth-button' onClick={handleLogOut}>
             Sign Out
           </button>

@@ -23,6 +23,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
         method: 'POST',
         body: credentials,
       }),
+      // could also use OnQueryStarted to set clear login form state here
     }),
     logout: builder.mutation({
       query: () => ({
