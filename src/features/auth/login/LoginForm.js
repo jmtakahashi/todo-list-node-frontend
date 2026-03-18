@@ -56,11 +56,12 @@ export default function LoginForm() {
     !isLoading;
 
   // get the persist value from localStorage and set it in the Redux state on component mount
-  React.useEffect(() => {
-    localStorage.getItem('persist') === 'true'
-      ? dispatch(setPersist(true))
-      : dispatch(setPersist(false));
-  }, [dispatch]);
+  // React.useEffect(() => {
+  //   console.log('getting local storage val', localStorage.getItem('persist'));
+  //   localStorage.getItem('persist') === 'true'
+  //     ? console.log('persist is true') || dispatch(setPersist(true))
+  //     : console.log('persist is false') || dispatch(setPersist(false));
+  // }, [dispatch]);
 
   const togglePersist = () => {
     dispatch(setPersist(!persist));

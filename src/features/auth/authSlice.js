@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   token: null,
-  persist: false,
+  persist: JSON.parse(localStorage.getItem('persist')) || false,
   error: null,
 };
 
