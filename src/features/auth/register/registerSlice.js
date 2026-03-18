@@ -113,8 +113,8 @@ export const registerSlice = createSlice({
 export const selectEmail = (state) => state.register.email;
 export const selectUsername = (state) => state.register.username;
 export const selectPassword = (state) => state.register.password;
-export const getRegisterStatus = (state) => state.register.status;
-export const getRegisterError = (state) => state.register.error;
+export const selectRegisterStatus = (state) => state.register.status;
+export const selectRegisterError = (state) => state.register.error;
 
 export const {
   setEmail,

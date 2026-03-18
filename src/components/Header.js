@@ -2,19 +2,18 @@ import { Link } from 'react-router';
 import { useLocation } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 import { useLogoutMutation } from '../features/auth/authApiSlice';
-import { getToken, setAuthError } from '../features/auth/authSlice';
+import { selectToken, setAuthError } from '../features/auth/authSlice';
 
 export default function Header() {
   const [logout] = useLogoutMutation();
   const location = useLocation();
-  const accessToken = useSelector(getToken);
+  const accessToken = useSelector(selectToken);
   const dispatch = useDispatch();
 
   const handleLogOut = async () => {
     try {
       await logout().unwrap();
     } catch (error) {
-      console.error('In Header. Error occurred while logging out:', error);
       dispatch(setAuthError(error));
     } 
   };

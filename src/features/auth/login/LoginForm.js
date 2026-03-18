@@ -2,12 +2,12 @@ import React from 'react'
 import { useNavigate } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 import { CSSTransition } from 'react-transition-group';
-import { setToken, setPersist, getAuthPersist } from '../authSlice';
+import { setToken, setPersist, selectAuthPersist } from '../authSlice';
 import { useLoginMutation } from '../authApiSlice';
 import {
   selectEmail,
   selectPassword,
-  getLoginError,
+  selectLoginError,
   setEmail,
   setPassword,
   setLoginError,
@@ -28,8 +28,8 @@ export default function LoginForm() {
   // email and password are objects containing value, hasErrors, and errorMessage properties
   const email = useSelector(selectEmail);
   const password = useSelector(selectPassword);
-  const error = useSelector(getLoginError);
-  const persist = useSelector(getAuthPersist);
+  const error = useSelector(selectLoginError);
+  const persist = useSelector(selectAuthPersist);
 
   const dispatch = useDispatch();
 
@@ -82,7 +82,6 @@ export default function LoginForm() {
       dispatch(resetState());
       navigate('/todo-list');
     } catch (error) {
-      console.error('in LoginForm. Error logging in user: ', error);
       dispatch(setLoginError( error.data?.message || 'An error occurred during login. Please try again.' ));
     }
   };

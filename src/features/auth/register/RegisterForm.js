@@ -11,7 +11,7 @@ import {
   selectEmail,
   selectUsername,
   selectPassword,
-  getRegisterError,
+  selectRegisterError,
   setEmail,
   setUsername,
   setPassword,
@@ -42,7 +42,7 @@ export default function RegisterForm() {
   const email = useSelector(selectEmail);
   const username = useSelector(selectUsername);
   const password = useSelector(selectPassword);
-  const error = useSelector(getRegisterError);
+  const error = useSelector(selectRegisterError);
 
   const dispatch = useDispatch();
 
@@ -78,7 +78,6 @@ export default function RegisterForm() {
             dispatch(setEmailIsUnique());
           }
         } catch (error) {
-          console.error('in RegisterForm. Error checking existing user: ', error);
           dispatch(setEmailError(error.data?.message || 'Failed to check for existing email. Please try again.'));
         }
       }
@@ -108,7 +107,6 @@ export default function RegisterForm() {
       dispatch(resetState());
       navigate('/todo-list');
     } catch (error) {
-      console.error('in RegisterForm. Error registering user: ', error);
       dispatch(
         setRegisterError(
           error.data?.message ||

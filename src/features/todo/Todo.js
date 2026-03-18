@@ -16,12 +16,11 @@ export default function Todo({ todo }) {
     try {
       await updateTodo({ id: todo._id, updatedFields: { completed: !todo.completed, task: todo.task } }).unwrap();
     } catch (error) {
-      console.error('in Todo. Error updating done state for todo: ', error);
       dispatch(setGlobalError(error.data?.message || 'Error updating todo'))
     }
   };
 
-  const handleEditTodoClick = (e) => {
+  const handleEditTodoClick = () => {
     setEditing(!editing);
     // focus the input field when entering edit mode
   };
@@ -35,7 +34,6 @@ export default function Todo({ todo }) {
     try {
       await updateTodo({ id: todo._id, updatedFields: { task: task, completed: todo.completed } }).unwrap();
     } catch (error) {
-      console.error('in Todo. Error saving edited todo: ', error);
       dispatch(setGlobalError(error.data?.message || 'Error updating todo'))
     }
   };
@@ -50,7 +48,6 @@ export default function Todo({ todo }) {
     try {
       await deleteTodo(todo._id).unwrap();
     } catch (error) {
-      console.error('in Todo. Error deleting todo: ', error);
       dispatch(setGlobalError(error.data?.message || 'Error deleting todo'))
     }
   };

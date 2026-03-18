@@ -1,5 +1,5 @@
 import { apiSlice } from '../../app/api/apiSlice';
-import { clearToken } from './authSlice';
+import { clearToken, setPersist, setAuthError } from './authSlice';
 
 export const authApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -32,17 +32,21 @@ export const authApiSlice = apiSlice.injectEndpoints({
       }),
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
-          const { data } = await queryFulfilled;
+          // const { data } =
+          await queryFulfilled;
+
           // data is expected to be the response from server { message: 'Logged out successfully' }
-          console.log('in authApiSlice.logout onQueryStarted. data: ', data);
+          // console.log('in authApiSlice.logout onQueryStarted. data: ', data);
+
+          // set the persist state to false in the authSlice, which will prevent the 
+          // PersistLogin component from trying to refresh the token on app load
           dispatch(clearToken());
+          dispatch(setPersist(false));
+
           // clear out cached data, subscriptions and anything to do with our api
           dispatch(apiSlice.util.resetApiState());
         } catch (error) {
-          console.error(
-            'in authApiSlice logout onQueryStarted. Error logging out user: ',
-            error,
-          );
+          dispatch(setAuthError(error.data?.message || 'Failed to log out. Please try again.'));
         }
       },
     }),

@@ -8,7 +8,7 @@ import { setGlobalError } from '../globalError/globalErrorSlice';
 export default function TodoComposer() {
   const inputRef = React.useRef(null);
 
-  const [addTodo, { isLoading, isError, error }] = useAddTodoMutation();
+  const [addTodo, { isLoading }] = useAddTodoMutation();
 
   const dispatch = useDispatch();
 
@@ -31,7 +31,6 @@ export default function TodoComposer() {
         await addTodo({ task: task }).unwrap();
         setTask(''); // clear the input field after successful submission
       } catch (error) {
-        console.error('in TodoComposer. Error adding todo: ', error);
         dispatch(setGlobalError(error.data?.message || 'Failed to add todo. Please try again.'));
       }
     }
@@ -39,11 +38,13 @@ export default function TodoComposer() {
   }
 
   // TESTING: checking error and isError states from the mutation hook
+  /*
   React.useEffect(() => {
     if (isError) {
       console.error('in TodoComposer. isError is true. error: ', error);
     }
   }, [isError, error]);
+  */
 
   return (
     <li>

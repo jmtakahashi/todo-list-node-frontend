@@ -25,9 +25,9 @@ const authSlice = createSlice({
   },
 });
 
-export const getToken = (state) => state.auth.token;
-export const getAuthPersist = (state) => state.auth.persist;
-export const getAuthError = (state) => state.auth.error;
+export const selectToken = (state) => state.auth.token;
+export const selectAuthPersist = (state) => state.auth.persist;
+export const selectAuthError = (state) => state.auth.error;
 
 export const { setToken, setAuthError, clearToken, setPersist } = authSlice.actions;
 

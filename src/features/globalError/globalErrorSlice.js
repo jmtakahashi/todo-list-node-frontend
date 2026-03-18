@@ -19,6 +19,6 @@ const globalErrorSlice = createSlice({
   },
 });
 
-export const getGlobalError = (state) => state.globalError.error;
+export const selectGlobalError = (state) => state.globalError.error;
 export const { setGlobalError, clearGlobalError } = globalErrorSlice.actions;
 export default globalErrorSlice.reducer;

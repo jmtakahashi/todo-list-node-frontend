@@ -54,8 +54,8 @@ export const loginSlice = createSlice({
 
 export const selectEmail = (state) => state.login.email;
 export const selectPassword = (state) => state.login.password;
-export const getLoginStatus = (state) => state.login.status;
-export const getLoginError = (state) => state.login.error;
+export const selectLoginStatus = (state) => state.login.status;
+export const selectLoginError = (state) => state.login.error;
 
 export const { setEmail, setPassword, setLoginError, setStatus, resetState } = loginSlice.actions;
 
