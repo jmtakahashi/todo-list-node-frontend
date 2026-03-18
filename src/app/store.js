@@ -6,8 +6,6 @@ import loginReducer from '../features/auth/login/loginSlice';
 import globalErrorReducer from '../features/globalError/globalErrorSlice';
 import { setupListeners } from '@reduxjs/toolkit/query';
 
-console.log('NODE_ENV at store creation:', process.env.NODE_ENV);
-
 export const store = configureStore({
   reducer: {
     [apiSlice.reducerPath]: apiSlice.reducer,
@@ -19,7 +17,7 @@ export const store = configureStore({
   // we need the below line when using RTK Query, otherwise we would need to add the apiSlice.middleware 
   // on every single component that needs to make an API call.  it is REQUIRED
   middleware: getDefaultMiddleware => getDefaultMiddleware().concat(apiSlice.middleware),
-  devTools: process.env.NODE_ENV === 'development',
+  devTools: process.env.NODE_ENV === 'development' ? true : false,
 });
 
 setupListeners(store.dispatch);
