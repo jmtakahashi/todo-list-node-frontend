@@ -34,6 +34,7 @@ a {
 
 input[type="text"], input[type="password"], input[type="email"] {
   width: 100%;
+  line-height: 1.5; /* need to specifiy to match body, or the user-agent stylesheet will be used */
 }
 
 h1, h2, h3, h4, h5, h6 {
