@@ -17,7 +17,7 @@ export const store = configureStore({
   // we need the below line when using RTK Query, otherwise we would need to add the apiSlice.middleware 
   // on every single component that needs to make an API call.  it is REQUIRED
   middleware: getDefaultMiddleware => getDefaultMiddleware().concat(apiSlice.middleware),
-  devTools: process.env.NODE_ENV === 'development' ? true : false,
+  devTools: process.env.NODE_ENV === 'development',
 });
 
 setupListeners(store.dispatch);
