@@ -11,14 +11,12 @@ import {
   selectEmail,
   selectUsername,
   selectPassword,
-  selectRegisterError,
   setEmail,
   setUsername,
   setPassword,
   setEmailIsUnique,
   setEmailIsNotUnique,
   setEmailError,
-  setRegisterError,
   resetState
 } from './registerSlice';
 
@@ -42,14 +40,13 @@ export default function RegisterForm() {
   const email = useSelector(selectEmail);
   const username = useSelector(selectUsername);
   const password = useSelector(selectPassword);
-  const error = useSelector(selectRegisterError);
 
   const dispatch = useDispatch();
 
   const navigate = useNavigate();
 
   const [checkExistingUser] = useCheckExistingUserMutation();
-  const [registerUser, { isLoading }] = useRegisterMutation();
+  const [registerUser, { isLoading, isError, error }] = useRegisterMutation();
 
   // set focus on email field when component mounts
   React.useEffect(() => {
@@ -107,11 +104,9 @@ export default function RegisterForm() {
       dispatch(resetState());
       navigate('/todo-list');
     } catch (error) {
-      dispatch(
-        setRegisterError(
-          error.data?.message ||
-            'An error occurred during registration. Please try again.',
-        ),
+      console.log(
+        error.data?.message ||
+          'An error occurred during registration. Please try again.',
       );
     }
   };
@@ -124,9 +119,9 @@ export default function RegisterForm() {
         <div className='todo-list__auth-form-container'>
           <h2>Sign Up</h2>
           <p>Create an account to use your Todo List across devices</p>
-          {error && (
+          {isError && (
             <div ref={errorRef} className='error auth-error'>
-              {error}
+              {error.data?.message}
             </div>
           )}
           <form

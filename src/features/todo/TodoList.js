@@ -1,8 +1,12 @@
 import TodoComposer from './TodoComposer';
 import Todo from './Todo';
 import { useFetchTodosQuery } from './todoApiSlice';
+import { useSelector } from 'react-redux';
+import { selectGlobalError } from '../globalError/globalErrorSlice'
 
 export default function TodoList() {
+  const globalError = useSelector(selectGlobalError)
+
   // the options we can pass to useFetchTodosQuery are made possible by adding
   // the setupListeners(store.dispatch); line in /app/store.js
   const {
@@ -24,7 +28,9 @@ export default function TodoList() {
       <TodoComposer />
       {isLoading && <p>Loading...</p>}
 
-      {isError && <p>{error?.data?.message || 'An error occurred.'}</p>}
+      {isError && <p className='error'>{error.data?.message || 'An error occurred.'}</p>}
+      
+      {globalError && <p className='error'>{ globalError }</p>}
 
       {isSuccess ? (
 

@@ -32,8 +32,17 @@ export default function PersistLogin() {
         const response = await refresh().unwrap();
         isMounted && dispatch(setToken(response.accessToken));
       } catch (error) {
+        isMounted &&
+        console.error(
+          error.data?.message || 'Session expired. Please log in again.',
+        );
         isMounted && dispatch(clearToken());
-        isMounted && dispatch(setLoginError( error.data?.message || 'Session expired. Please log in again.' ));
+        isMounted &&
+          dispatch(
+            setLoginError(
+              error.data?.message || 'Session expired. Please log in again.',
+            ),
+          );
       } finally {
         isMounted && setIsLoading(false);
       }

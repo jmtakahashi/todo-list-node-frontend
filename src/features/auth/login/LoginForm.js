@@ -7,10 +7,8 @@ import { useLoginMutation } from '../authApiSlice';
 import {
   selectEmail,
   selectPassword,
-  selectLoginError,
   setEmail,
   setPassword,
-  setLoginError,
   resetState,
 } from './loginSlice';
 
@@ -28,14 +26,13 @@ export default function LoginForm() {
   // email and password are objects containing value, hasErrors, and errorMessage properties
   const email = useSelector(selectEmail);
   const password = useSelector(selectPassword);
-  const error = useSelector(selectLoginError);
   const persist = useSelector(selectAuthPersist);
 
   const dispatch = useDispatch();
 
   const navigate = useNavigate();
 
-  const [login, { isLoading }] = useLoginMutation();
+  const [login, { isLoading, isError, error }] = useLoginMutation();
 
   // set focus on email field when component mounts
   React.useEffect(() => {
@@ -83,7 +80,7 @@ export default function LoginForm() {
       dispatch(resetState());
       navigate('/todo-list');
     } catch (error) {
-      dispatch(setLoginError( error.data?.message || 'An error occurred during login. Please try again.' ));
+      console.error(error.data?.message)
     }
   };
 
@@ -94,9 +91,9 @@ export default function LoginForm() {
       ) : (
         <div className='todo-list__auth-form-container'>
           <h2>Log In</h2>
-          {error && (
+          {isError && (
             <div ref={errorRef} className='error auth-error'>
-              {error}
+              {error.data.message}
             </div>
           )}
           <form
