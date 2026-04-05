@@ -14,13 +14,13 @@ export default function Header() {
     try {
       await logout().unwrap();
     } catch (error) {
-      dispatch(setAuthError(error));
+      dispatch(setAuthError(error.data?.message)); // set a global error so we can access elsewhere
     } 
   };
 
   return (
     <header className='header'>
-      {location.pathname === '/todo-list' ? (
+      {location.pathname.includes('/todo-list') || location.pathname.includes('/add-edit-lists') ? (
         <h1 className='todo-list__title--no-link'>Todo List</h1>
       ) : (
         <Link to='/'>

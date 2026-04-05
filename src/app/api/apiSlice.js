@@ -11,9 +11,11 @@ const baseQuery = fetchBaseQuery({
   credentials: 'include',
   prepareHeaders: (headers, { getState }) => {
     const token = getState().auth.token;
+
     if (token) {
       headers.set('Authorization', `Bearer ${token}`);
     }
+
     return headers;
   },
 });
@@ -35,7 +37,7 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
 
     // response will contain a data property containing the new access token or an error property (refreshResult.data || refreshResult.error)
     // 4a. if server responds with a new access token, store the token in state and retry the original query
-    if (refreshResult.data) {
+    if (refreshResult?.data) {
       const newToken = refreshResult.data.accessToken;
 
       api.dispatch(setToken(newToken));
@@ -66,6 +68,6 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
 
 export const apiSlice = createApi({
   baseQuery: baseQueryWithReauth,
-  tagTypes: ['Todo'],
+  tagTypes: ['List', 'Todo'],
   endpoints: (builder) => ({})
 });

@@ -2,7 +2,8 @@ import React from 'react'
 import { useNavigate } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 import { CSSTransition } from 'react-transition-group';
-import { setToken, setPersist, selectAuthPersist } from '../authSlice';
+import { jwtDecode } from 'jwt-decode';
+import { setToken, setUserId, setPersist, selectAuthPersist } from '../authSlice';
 import { useLoginMutation } from '../authApiSlice';
 import {
   selectEmail,
@@ -46,12 +47,6 @@ export default function LoginForm() {
     }
   }, [error]);
 
-  const canSubmit =
-    Boolean(email.value) &&
-    Boolean(password.value) &&
-    !email.hasErrors &&
-    !isLoading;
-
   // get the persist value from localStorage and set it in the Redux state on component mount
   // React.useEffect(() => {
   //   console.log('getting local storage val', localStorage.getItem('persist'));
@@ -68,6 +63,12 @@ export default function LoginForm() {
   React.useEffect(() => {
     localStorage.setItem('persist', persist);
   }, [persist]);
+
+  const canSubmit =
+    Boolean(email.value) &&
+    Boolean(password.value) &&
+    !email.hasErrors &&
+    !isLoading;
   
   const handleLogIn = async (e) => {
     e.preventDefault();
@@ -75,12 +76,17 @@ export default function LoginForm() {
       const response = await login({
         email: email.value,
         password: password.value,
-      }).unwrap();
+      }).unwrap(); // unwrap the response to access the actual data or error in the catch block
+      const decoded = jwtDecode(response.accessToken);
       dispatch(setToken(response.accessToken));
+      dispatch(setUserId(decoded.id));
       dispatch(resetState());
       navigate('/todo-list');
     } catch (error) {
-      console.error(error.data?.message)
+      console.error(
+        error.data?.message ||
+          'An error occurred during login.  Please try again.',
+      );
     }
   };
 

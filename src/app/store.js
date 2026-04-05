@@ -20,4 +20,6 @@ export const store = configureStore({
   devTools: process.env.NODE_ENV === 'development',
 });
 
+// this line allows us to use the options object in our query hooks 
+// (ex: useFetchTodosQuery(arg, { pollingInterval: 60000 }))
 setupListeners(store.dispatch);

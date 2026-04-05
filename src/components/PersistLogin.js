@@ -1,7 +1,8 @@
 import React from 'react';
 import { Outlet } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
-import { selectToken, selectAuthPersist, setToken, /*setPersist, */clearToken } from '../features/auth/authSlice';
+import { jwtDecode } from 'jwt-decode';
+import { selectToken, selectAuthPersist, setToken, /*setPersist, */clearToken, setUserId } from '../features/auth/authSlice';
 import { useRefreshMutation } from '../features/auth/authApiSlice';
 import { setLoginError } from '../features/auth/login/loginSlice';
 
@@ -30,7 +31,10 @@ export default function PersistLogin() {
     const verifyRefreshToken = async () => {       
       try {
         const response = await refresh().unwrap();
+
+        const decoded = jwtDecode(response.accessToken);
         isMounted && dispatch(setToken(response.accessToken));
+        isMounted && dispatch(setUserId(decoded.id));
       } catch (error) {
         isMounted &&
         console.error(

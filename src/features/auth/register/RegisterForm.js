@@ -2,10 +2,11 @@ import React from 'react'
 import { useNavigate } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 import { CSSTransition } from 'react-transition-group';
+import { jwtDecode } from 'jwt-decode';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { setToken } from '../authSlice';
+import { setToken, setUserId } from '../authSlice';
 import { useCheckExistingUserMutation, useRegisterMutation } from '../authApiSlice';
 import {
   selectEmail,
@@ -99,12 +100,14 @@ export default function RegisterForm() {
         email: email.value,
         username: username.value,
         password: password.value,
-      }).unwrap();
+      }).unwrap(); // unwrap the response to access the actual data or error in the catch block
+      const decoded = jwtDecode(response.accessToken);
       dispatch(setToken(response.accessToken));
+      dispatch(setUserId(decoded.id));
       dispatch(resetState());
       navigate('/todo-list');
     } catch (error) {
-      console.log(
+      console.error(
         error.data?.message ||
           'An error occurred during registration. Please try again.',
       );

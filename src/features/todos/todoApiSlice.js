@@ -18,25 +18,26 @@ import { apiSlice } from '../../app/api/apiSlice';
 export const todoApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     fetchTodos: builder.query({
-      query: () => ({
-        url: '/todos',
+      query: ({ userId, listId }) => ({
+        url: `/users/${userId}/lists/${listId}/todos`,
         validateStatus: (response, result) => {
-          // RTK Query considers a response valid if the status code is 200-299 
+          // RTK Query considers a response valid if the status code is 200-299
           // and the result does not have an error property
           if (response.status === 200 && !result.error) {
             return result;
           }
-          return false; 
+
+          return false;
         },
       }),
       transformResponse: (responseData) => {
-        // responseData is an array of todos, we want to normalize it so 
+        // responseData is an array of todos, we want to normalize it so
         // RTK can work with it and return the normalized state object
         // we can also normalize data here without using createEntityAdapter
         // by transforming the array into an object with ids and entities properties
         // but we don't get the benefits of the pre-built reducers and selectors that come with createEntityAdapter
-        
-        // set all todos to have an id property that is equal 
+
+        // set all todos to have an id property that is equal
         // to the _id property coming from the backend (RTK query expects an id property by default, not an _id property)
         const loadedTodos = responseData.todos.map((todo) => ({
           ...todo,
@@ -63,27 +64,29 @@ export const todoApiSlice = apiSlice.injectEndpoints({
           ];
         }
 
-        // if we don't have a result containing an ids property, we want to provide a tag for the entire list so 
-        // that it will be refetched when a new todo is added
+        /* 
+          if we don't have a result containing an ids property, we want to provide a tag for the 
+          entire list so that it will be invalidated and refetched when a new todo is added 
+        */
         return [{ type: 'Todo', id: 'LIST' }];
       },
       // keepUnusedDataFor: 5, // Cache data for 5 seconds (meaning we have to leave the component for 5 seconds before refetching data)
     }),
     addTodo: builder.mutation({
-      query: (newTodo) => ({
-        url: '/todos',
+      query: ({newTodo, userId, listId}) => ({
+        url: `/users/${userId}/lists/${listId}/todos`,
         method: 'POST',
         body: newTodo,
       }),
       invalidatesTags: [{ type: 'Todo', id: 'LIST' }],
     }),
     updateTodo: builder.mutation({
-      query: ({ id, updatedFields }) => ({
-        url: `/todos/${id}`,
+      query: ({ todoId, updatedFields, userId, listId }) => ({
+        url: `/users/${userId}/lists/${listId}/todos/${todoId}`,
         method: 'PATCH',
         body: updatedFields,
       }),
-      // the third argument to invalidatesTags is the original argument passed to the query or mutation endpoint 
+      // the third argument to invalidatesTags is the original argument passed to the query or mutation endpoint
       // (in this case, the object containing id and updatedFields)
       // - to use the below line, we would need to normalize the data being returned from the query, this allows
       //   RTK query to manage our list of todos and merge in updates as they occur.
@@ -93,11 +96,11 @@ export const todoApiSlice = apiSlice.injectEndpoints({
       // invalidatesTags: [{ type: 'Todo', id: 'LIST' }],
     }),
     deleteTodo: builder.mutation({
-      query: (id) => ({
-        url: `/todos/${id}`,
+      query: ({ todoId, userId, listId }) => ({
+        url: `/users/${userId}/lists/${listId}/todos/${todoId}`,
         method: 'DELETE',
       }),
-      invalidatesTags: [{ type: 'Todo', id: 'LIST'}],
+      invalidatesTags: [{ type: 'Todo', id: 'LIST' }],
     }),
   }),
 });

@@ -3,7 +3,7 @@ import { useUpdateTodoMutation, useDeleteTodoMutation } from './todoApiSlice';
 import { useDispatch } from 'react-redux';
 import { setGlobalError } from '../globalError/globalErrorSlice';
 
-export default function Todo({ todo }) {
+export default function Todo({ todo, listId, userId }) {
   const [updateTodo, { isLoading: editLoading }] = useUpdateTodoMutation();
   const [deleteTodo, { isLoading: deleteLoading }] = useDeleteTodoMutation();
   const dispatch = useDispatch();
@@ -14,7 +14,7 @@ export default function Todo({ todo }) {
 
   const handleCheckboxClick = async () => {
     try {
-      await updateTodo({ id: todo._id, updatedFields: { completed: !todo.completed, task: todo.task } }).unwrap();
+      await updateTodo({ todoId: todo._id, updatedFields: { completed: !todo.completed, task: todo.task }, userId, listId }).unwrap();
     } catch (error) {
       dispatch(setGlobalError(error.data?.message || 'Error updating todo'))
     }
@@ -32,7 +32,7 @@ export default function Todo({ todo }) {
   const handleSaveEditedTodoClick = async () => {
     setEditing(false);
     try {
-      await updateTodo({ id: todo._id, updatedFields: { task: task, completed: todo.completed } }).unwrap();
+      await updateTodo({ todoId: todo._id, updatedFields: { task: task, completed: todo.completed }, userId, listId }).unwrap();
     } catch (error) {
       dispatch(setGlobalError(error.data?.message || 'Error updating todo'))
     }
@@ -46,14 +46,14 @@ export default function Todo({ todo }) {
 
   const handleDeleteTodoClick = async () => {
     try {
-      await deleteTodo(todo._id).unwrap();
+      await deleteTodo({ todoId: todo._id, userId, listId }).unwrap();
     } catch (error) {
       dispatch(setGlobalError(error.data?.message || 'Error deleting todo'))
     }
   };
 
   return (
-    <li className='todo-list__todo'>
+    <>
       {deleteLoading ? (
         <span>Loading...</span>
       ) : (
@@ -104,6 +104,6 @@ export default function Todo({ todo }) {
           </div>
         </>
       )}
-    </li>
+    </>
   );
 }
