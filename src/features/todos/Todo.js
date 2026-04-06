@@ -92,13 +92,13 @@ export default function Todo({ todo, listId, userId }) {
           <div className='todo-list__todo-buttons-container'>
             {editing === true ? (
               <React.Fragment>
-                <button onClick={handleSaveEditedTodoClick}>Save</button>
-                <button onClick={handleCancelEditedTodoClick}>Cancel</button>
+                <button className='todo-list__button--link' onClick={handleSaveEditedTodoClick}>Save</button>
+                <button className='todo-list__button--link' onClick={handleCancelEditedTodoClick}>Cancel</button>
               </React.Fragment>
             ) : (
               <React.Fragment>
-                <button onClick={handleEditTodoClick}>Edit</button>
-                <button onClick={handleDeleteTodoClick}>Delete</button>
+                <button className='todo-list__button--link' onClick={handleEditTodoClick}>Edit</button>
+                <button className='todo-list__button--link' onClick={handleDeleteTodoClick}>Delete</button>
               </React.Fragment>
             )}
           </div>

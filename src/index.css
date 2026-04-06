@@ -41,6 +41,16 @@ h1, h2, h3, h4, h5, h6 {
   line-height: 1.2;
 }
 
+/* edit, delete, save, cancel buttons, back buttons */
+.todo-list__button--link {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  color: var(--light-text-color);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 .container {
   max-width: 600px;
   margin: auto;
@@ -66,16 +76,6 @@ header {
 .todo-list__auth-buttons-container {
   display: flex;
   gap: 1rem;
-}
-
-/* auth buttons - same style as li.todo-list__todo button */
-.todo-list__auth-button {
-  background: none;
-  border: none;
-  font-size: 1rem;
-  color: var(--light-text-color);
-  text-decoration: underline;
-  cursor: pointer;
 }
 
 .todo-list__auth-form-container h2,
@@ -316,17 +316,6 @@ li.todo-list__todo > label:has(input[type="text"]) {
   color: var(--dark-text-color);
 }
 
-/* edit, delete, save, cancel buttons */
-li.todo-list__todo button,
-li.todo-list__list button {
-  background: none;
-  border: none;
-  font-size: 1rem;
-  color: var(--light-text-color);
-  text-decoration: underline;
-  cursor: pointer;
-}
-
 footer {
   padding: 2rem 0;
   text-align: center;
@@ -356,6 +345,8 @@ footer {
   height: 100%;
   line-height: normal;
 }
+
+/* for CSSTransition */
 
 .auth-form-input-error-message-enter {
   opacity: 0;

@@ -83,13 +83,13 @@ export default function List({ list, userId }) {
           <div className='todo-list__list-buttons-container'>
             {editing === true ? (
               <React.Fragment>
-                <button onClick={handleSaveEditedListClick}>Save</button>
-                <button onClick={handleCancelEditedListClick}>Cancel</button>
+                <button className='todo-list__button--link' onClick={handleSaveEditedListClick}>Save</button>
+                <button className='todo-list__button--link' onClick={handleCancelEditedListClick}>Cancel</button>
               </React.Fragment>
             ) : (
               <React.Fragment>
-                <button onClick={handleEditListClick}>Edit</button>
-                <button onClick={handleDeleteListClick}>Delete</button>
+                <button className='todo-list__button--link' onClick={handleEditListClick}>Edit</button>
+                <button className='todo-list__button--link' onClick={handleDeleteListClick}>Delete</button>
               </React.Fragment>
             )}
           </div>

@@ -24,7 +24,7 @@ const Lists = () => {
     <>
       <div className='todo-list__lists-header'>
         <h2>Lists</h2>
-        <Link to='/add-edit-lists' className='todo-list__lists-button'>
+        <Link to='/add-edit-lists'>
           Add/Edit Lists
         </Link>
       </div>
@@ -52,7 +52,11 @@ const Lists = () => {
             name='lists'
             className='todo-list__lists-select'
             onChange={(e) => handleSelectList(data.entities[e.target.value])}
+            defaultValue=''
           >
+            <option value='' disabled>
+              Select a list
+            </option>
             {/* this map callback function is specific to RTK query w/ createEntityAdapter, data contains ids and entities */}
             {data.ids.map((id) => {
               const list = data.entities[id];

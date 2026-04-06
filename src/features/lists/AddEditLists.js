@@ -1,4 +1,4 @@
-import { Link } from 'react-router';
+import { useNavigate } from 'react-router';
 import List from './List';
 import ListComposer from './ListComposer';
 import { useSelector } from 'react-redux';
@@ -7,6 +7,8 @@ import { useFetchListsQuery } from './listApiSlice';
 import { selectGlobalError } from '../globalError/globalErrorSlice';
 
 const AddEditLists = () => {
+  const navigate = useNavigate();
+
   const globalError = useSelector(selectGlobalError);
 
   const userId = useSelector(selectUserId);
@@ -19,9 +21,12 @@ const AddEditLists = () => {
     <div className='todo-list__container'>
       <div className='todo-list__lists-header'>
         <h2>Add/Edit Lists</h2>
-        <Link to='/todo-list' className='todo-list__lists-button'>
+        <button
+          className='todo-list__button--link'
+          onClick={() => navigate(-1)}
+        >
           Back to Todo Lists
-        </Link>
+        </button>
       </div>
 
       <ListComposer userId={userId} />

@@ -1,4 +1,4 @@
-import { useParams } from 'react-router';
+import { useParams, Navigate } from 'react-router';
 import TodoComposer from './TodoComposer';
 import Todo from './Todo';
 import { useFetchTodosQuery } from './todoApiSlice';
@@ -31,6 +31,10 @@ export default function Todos() {
   );
 
   const usingCreateEntityAdapter = true; // Set to true if using createEntityAdapter in todoApiSlice
+
+  if (!list) {
+    return <Navigate to='/todo-list' replace />; // Redirect to lists page if the list doesn't exist);
+  }
 
   return (
     <>
